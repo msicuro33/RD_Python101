@@ -19,8 +19,8 @@ cmds.joint(n='rig_wrist_joint', p=[4.193028, 0, 0.861846])
 cmds.joint(n='rig_wristEnd_joint', p=[5.316333, 0, 1.617172])
 cmds.select(d=True)
 
-#Create IK Rig
 
+#Create IK Rig
 
 #1st Step: Create IK Handle
 cmds.ikHandle(n='ikhandle_arm', sj='ik_shoulder_joint', ee='ik_wrist_joint', sol='ikRPsolver',p = 2, w = 1)
