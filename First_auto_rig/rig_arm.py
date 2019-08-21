@@ -3,21 +3,21 @@ cmds.joint(n='ik_shoulder_joint', p=[-7.253066, 0, 0.590704])
 cmds.joint(n='ik_elbow_joint', p=[-1.365397, 0, -0.939316])
 cmds.joint(n='ik_wrist_joint', p=[4.193028, 0, 0.861846])
 cmds.joint(n='ik_wristEnd_joint', p=[5.316333, 0, 1.617172])
-cmds.select(d=True)
+cmds.select(cl=True)
 
 #Create FK joints
 cmds.joint(n='fk_shoulder_joint', p=[-7.253066, 0, 0.590704])
 cmds.joint(n='fk_elbow_joint', p=[-1.365397, 0, -0.939316])
 cmds.joint(n='fk_wrist_joint', p=[4.193028, 0, 0.861846])
 cmds.joint(n='fk_wristEnd_joint', p=[5.316333, 0, 1.617172])
-cmds.select(d=True)
+cmds.select(cl=True)
 
 #Create rig joints
 cmds.joint(n='rig_shoulder_joint', p=[-7.253066, 0, 0.590704])
 cmds.joint(n='rig_elbow_joint', p=[-1.365397, 0, -0.939316])
 cmds.joint(n='rig_wrist_joint', p=[4.193028, 0, 0.861846])
 cmds.joint(n='rig_wristEnd_joint', p=[5.316333, 0, 1.617172])
-cmds.select(d=True)
+cmds.select(cl=True)
 
 
 '''Create IK Rig'''
@@ -41,7 +41,7 @@ cmds.xform('group_ctrl_IKwrist', t = ik_wrist_joint_pos, ws = True)
 #Parent ikHandle to control
 cmds.parent('ikhandle_arm','ctrl_ik_wrist')
 
-cmds.select(d=True)
+cmds.select(cl=True)
 
 
 '''Create FK rig'''
@@ -57,7 +57,7 @@ cmds.parent('ctrl_fk_shoulder','group_ctrl_FKshoulder')
 #Move the group to the shoulder joint
 cmds.xform('group_ctrl_FKshoulder', t = fk_shoulder_joint_pos, ws = True)
 #Deslect
-cmds.select(d=True)
+cmds.select(cl=True)
 
 #2nd Step: Create FK Elbow control
 #Query FK elbow joint world space position
@@ -71,7 +71,7 @@ cmds.parent('ctrl_fk_elbow','group_ctrl_FKelbow')
 #Move the group to the shoulder joint
 cmds.xform('group_ctrl_FKelbow', t = fk_elbow_joint_pos, ws = True)
 #Deslect
-cmds.select(d=True)
+cmds.select(cl=True)
 
 #3rd Step: Create FK Wrist control
 #Query FK wrist joint world space position
@@ -85,7 +85,7 @@ cmds.parent('ctrl_fk_wrist','group_ctrl_FKwrist')
 #Move the group to the wrist joint
 cmds.xform('group_ctrl_FKwrist', t = fk_wrist_joint_pos, ws = True)
 #Deslect
-cmds.select(d=True)
+cmds.select(cl=True)
 
 
 '''Connect IK and FK to rig joints'''
