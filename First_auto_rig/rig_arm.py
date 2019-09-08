@@ -87,5 +87,10 @@ cmds.xform('group_ctrl_FKwrist', t = fk_wrist_joint_pos, ws = True)
 #Deslect
 cmds.select(cl=True)
 
+'''CreatePole vector for IK Handle'''
+cmds.poleVectorConstraint('locator1', 'ikhandle_arm')
+
 
 '''Connect IK and FK to rig joints'''
+#parent Constrain fk->ik->rig
+cmds.parentConstraint('fk_shoulder_joint', 'ik_shoulder_joint', 'rig_shoulder_joint', maintainOffset=True, weight=1)
