@@ -87,10 +87,24 @@ cmds.xform('group_ctrl_FKwrist', t = fk_wrist_joint_pos, ws = True)
 #Deslect
 cmds.select(cl=True)
 
-'''CreatePole vector for IK Handle'''
-cmds.poleVectorConstraint('locator1', 'ikhandle_arm')
+'''Create Pole vector for IK Handle'''
+#Query IK elbow joint world space position
+ik_elbow_joint_pos = cmds.xform('ik_elbow_joint',q=True, t = True, ws = True)
+
+#Create Locator for Pole Vector
+cmds.spacelocator(n='elbow_pole_vector')
+
+#Move the Locator to the elbow joint
+cmds.xform('elbow_pole_vector', t = ik_elbow_joint_pos, ws = True)
+
+#Create Pole Vector Constraint
+#DOUBLE CHECK IF CORRECT, NOT SURE THAT'S HOW A POLE VECTOR WORKS
+cmds.poleVectorConstraint('elbow_pole_vector', 'ikhandle_arm')
 
 
 '''Connect IK and FK to rig joints'''
 #parent Constrain fk->ik->rig
 cmds.parentConstraint('fk_shoulder_joint', 'ik_shoulder_joint', 'rig_shoulder_joint', maintainOffset=True, weight=1)
+#To switch between FK and IK, change values of the two attributes (FK shoulder joint and IK shoulder joint)
+# and set one or the other to zero
+
