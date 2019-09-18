@@ -38,13 +38,14 @@ cmds.circle(n='ctrl_ik_wrist', )
 cmds.parent('ctrl_ik_wrist','group_ctrl_IKwrist')
 #Move the group pivot to the wrist joint
 cmds.xform('group_ctrl_IKwrist', t = ik_wrist_joint_pos, ws = True)
-#Parent ikHandle to control
+#Parent control to the IK Handle
 cmds.parent('ikhandle_arm','ctrl_ik_wrist')
-
+#Deselect
 cmds.select(cl=True)
 
 
 '''Create FK rig'''
+
 #1st Step: Create FK Shoulder control
 #Query FK shoulder joint world space position
 fk_shoulder_joint_pos = cmds.xform('fk_shoulder_joint',q=True, t = True, ws = True)
@@ -90,15 +91,13 @@ cmds.select(cl=True)
 '''Create Pole vector for IK Handle'''
 #Query IK elbow joint world space position
 ik_elbow_joint_pos = cmds.xform('ik_elbow_joint',q=True, t = True, ws = True)
-
 #Create Locator for Pole Vector
 cmds.spacelocator(n='elbow_pole_vector')
-
 #Move the Locator to the elbow joint
 cmds.xform('elbow_pole_vector', t = ik_elbow_joint_pos, ws = True)
-
+#Move the Locator away from the elbow in the Z axis
+cmds.setAttr('elbow_pole_vector.translateZ', -4.0,)
 #Create Pole Vector Constraint
-#DOUBLE CHECK IF CORRECT, NOT SURE THAT'S HOW A POLE VECTOR WORKS
 cmds.poleVectorConstraint('elbow_pole_vector', 'ikhandle_arm')
 
 
