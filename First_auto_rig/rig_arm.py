@@ -1,22 +1,20 @@
-#Create IK joints
-cmds.joint(n='ik_shoulder_joint', p=[-7.253066, 0, 0.590704])
-cmds.joint(n='ik_elbow_joint', p=[-1.365397, 0, -0.939316])
-cmds.joint(n='ik_wrist_joint', p=[4.193028, 0, 0.861846])
-cmds.joint(n='ik_wristEnd_joint', p=[5.316333, 0, 1.617172])
+'''Create IK joints'''
+
+ik_joint_names = [['ik_shoulder_joint', [-7.253066, 0, 0.590704]],['ik_elbow_joint', [-1.365397, 0, -0.939316]], ['ik_wrist_joint', [4.193028, 0, 0.861846]], ['ik_wristEnd_joint', [5.316333, 0, 1.617172]]]
+for i in ik_joint_names:
+	cmds.joint(n=i[0], p=i[1])
 cmds.select(cl=True)
 
-#Create FK joints
-cmds.joint(n='fk_shoulder_joint', p=[-7.253066, 0, 0.590704])
-cmds.joint(n='fk_elbow_joint', p=[-1.365397, 0, -0.939316])
-cmds.joint(n='fk_wrist_joint', p=[4.193028, 0, 0.861846])
-cmds.joint(n='fk_wristEnd_joint', p=[5.316333, 0, 1.617172])
+'''Create FK joints'''
+fk_joint_names = [['fk_shoulder_joint', [-7.253066, 0, 0.590704]],['fk_elbow_joint', [-1.365397, 0, -0.939316]], ['fk_wrist_joint', [4.193028, 0, 0.861846]], ['fk_wristEnd_joint', [5.316333, 0, 1.617172]]]
+for i in fk_joint_names:
+	cmds.joint(n=i[0], p=i[1])
 cmds.select(cl=True)
 
-#Create rig joints
-cmds.joint(n='rig_shoulder_joint', p=[-7.253066, 0, 0.590704])
-cmds.joint(n='rig_elbow_joint', p=[-1.365397, 0, -0.939316])
-cmds.joint(n='rig_wrist_joint', p=[4.193028, 0, 0.861846])
-cmds.joint(n='rig_wristEnd_joint', p=[5.316333, 0, 1.617172])
+'''Create rig joints'''
+rig_joint_names = [['rig_shoulder_joint', [-7.253066, 0, 0.590704]],['rig_elbow_joint', [-1.365397, 0, -0.939316]], ['rig_wrist_joint', [4.193028, 0, 0.861846]], ['rig_wristEnd_joint', [5.316333, 0, 1.617172]]]
+for i in rig_joint_names:
+	cmds.joint(n=i[0], p=i[1])
 cmds.select(cl=True)
 
 
