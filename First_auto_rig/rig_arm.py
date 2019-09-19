@@ -1,5 +1,4 @@
 '''Create IK joints'''
-
 ik_joint_names = [['ik_shoulder_joint', [-7.253066, 0, 0.590704]],['ik_elbow_joint', [-1.365397, 0, -0.939316]], ['ik_wrist_joint', [4.193028, 0, 0.861846]], ['ik_wristEnd_joint', [5.316333, 0, 1.617172]]]
 for i in ik_joint_names:
 	cmds.joint(n=i[0], p=i[1])
