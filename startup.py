@@ -1,6 +1,6 @@
 import maya.cmds as cmds
 
-print("Startup")
+print("Hi I'm in Startup!")
 
 #Can set up custom settings
 #Use cmds.currentUnit to choose desired unit on startup
@@ -11,4 +11,4 @@ cmds.currentUnit(time = 'ntsc')
 #Change the currentlinear unit to centimeters
 cmds.currentUnit(linear = 'cm')
 
-import py101ui.rigui as ui
+import py101_user_interface.rig_user_interface as ui
