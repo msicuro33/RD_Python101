@@ -1,20 +1,33 @@
-'''Create IK joints'''
+import maya.cmds as cmds
+
+#Hold IK joint names + positions
 ik_joint_names = [['ik_shoulder_joint', [-7.253066, 0, 0.590704]],['ik_elbow_joint', [-1.365397, 0, -0.939316]], ['ik_wrist_joint', [4.193028, 0, 0.861846]], ['ik_wristEnd_joint', [5.316333, 0, 1.617172]]]
-for i in ik_joint_names:
-	cmds.joint(n=i[0], p=i[1])
-cmds.select(cl=True)
-
-'''Create FK joints'''
+#Hold FK joint names + positions
 fk_joint_names = [['fk_shoulder_joint', [-7.253066, 0, 0.590704]],['fk_elbow_joint', [-1.365397, 0, -0.939316]], ['fk_wrist_joint', [4.193028, 0, 0.861846]], ['fk_wristEnd_joint', [5.316333, 0, 1.617172]]]
-for i in fk_joint_names:
-	cmds.joint(n=i[0], p=i[1])
+#Hold rig joint names + positions
+rig_joint_names = [['rig_shoulder_joint', [-7.253066, 0, 0.590704]],['rig_elbow_joint', [-1.365397, 0, -0.939316]], ['rig_wrist_joint', [4.193028, 0, 0.861846]], ['rig_wristEnd_joint', [5.316333, 0, 1.617172]]]
+
+'''
+Function to create joints: 
+Uses joint names variable as an argument and iterates through the name and position
+
+'''
+def createJoint(joint_info):
+	for i in joint_info:
+		cmds.joint(n=i[0], p=i[1])
+
+#Create IK joints
+createJoint(ik_joint_names)
 cmds.select(cl=True)
 
-'''Create rig joints'''
-rig_joint_names = [['rig_shoulder_joint', [-7.253066, 0, 0.590704]],['rig_elbow_joint', [-1.365397, 0, -0.939316]], ['rig_wrist_joint', [4.193028, 0, 0.861846]], ['rig_wristEnd_joint', [5.316333, 0, 1.617172]]]
-for i in rig_joint_names:
-	cmds.joint(n=i[0], p=i[1])
+#Create FK joints
+createJoint(fk_joint_names)
 cmds.select(cl=True)
+
+#Create rig joints
+createJoint(rig_joint_names)
+cmds.select(cl=True)
+
 
 
 '''Create IK Rig'''
@@ -89,7 +102,7 @@ cmds.select(cl=True)
 #Query IK elbow joint world space position
 ik_elbow_joint_pos = cmds.xform('ik_elbow_joint',q=True, t = True, ws = True)
 #Create Locator for Pole Vector
-cmds.spacelocator(n='elbow_pole_vector')
+cmds.spaceLocator(n='elbow_pole_vector')
 #Move the Locator to the elbow joint
 cmds.xform('elbow_pole_vector', t = ik_elbow_joint_pos, ws = True)
 #Move the Locator away from the elbow in the Z axis

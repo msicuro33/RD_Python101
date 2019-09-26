@@ -1,0 +1,1 @@
+#First_auto_rig init file
