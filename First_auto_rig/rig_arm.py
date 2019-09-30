@@ -1,6 +1,9 @@
 import maya.cmds as cmds
 
-'''Create joints'''
+#################
+##Create joints##
+#################
+
 #Hold IK joint names + positions
 ik_joint_names = [['ik_shoulder_joint', [-7.253066, 0, 0.590704]],['ik_elbow_joint', [-1.365397, 0, -0.939316]], ['ik_wrist_joint', [4.193028, 0, 0.861846]], ['ik_wristEnd_joint', [5.316333, 0, 1.617172]]]
 #Hold FK joint names + positions
@@ -30,8 +33,9 @@ createJoint(rig_joint_names)
 cmds.select(cl=True)
 
 
-
-'''Create IK Rig'''
+#################
+##Create IK Rig##
+#################
 
 #1st Step: Create IK Handle
 cmds.ikHandle(n='ikhandle_arm', sj='ik_shoulder_joint', ee='ik_wrist_joint', sol='ikRPsolver',p = 2, w = 1)
@@ -55,13 +59,19 @@ cmds.parent('ikhandle_arm','ctrl_ik_wrist')
 cmds.select(cl=True)
 
 
-'''Create FK rig'''
+#################
+##Create FK Rig##
+#################
 
 #FK Joint world space positions
 fk_shoulder_joint_pos = cmds.xform('fk_shoulder_joint',q=True, t = True, ws = True)
 fk_elbow_joint_pos = cmds.xform('fk_elbow_joint',q=True, t = True, ws = True)
 fk_wrist_joint_pos = cmds.xform('fk_wrist_joint',q=True, t = True, ws = True) 
 
+
+###################
+##Create Controls##
+###################
 '''
 Function to create controls
 '''
@@ -81,8 +91,9 @@ createControl('group_ctrl_FKshoulder','ctrl_fk_shoulder',fk_shoulder_joint_pos)
 createControl('group_ctrl_FKelbow','ctrl_fk_elbow',fk_elbow_joint_pos)
 createControl('group_ctrl_FKwrist','ctrl_fk_wrist',fk_wrist_joint_pos)
 
-
-'''Create Pole vector for IK Handle'''
+####################################
+##Create Pole vector for IK Handle##
+####################################
 #Query IK elbow joint world space position
 ik_elbow_joint_pos = cmds.xform('ik_elbow_joint',q=True, t = True, ws = True)
 #Create Locator for Pole Vector
