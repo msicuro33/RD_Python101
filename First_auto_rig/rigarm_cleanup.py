@@ -18,13 +18,17 @@ fk_joint_names = [['fk_shoulder_joint', [-7.253066, 0, 0.590704]],['fk_elbow_joi
 #Hold rig joint names + positions
 rig_joint_names = [['rig_shoulder_joint', [-7.253066, 0, 0.590704]],['rig_elbow_joint', [-1.365397, 0, -0.939316]], ['rig_wrist_joint', [4.193028, 0, 0.861846]], ['rig_wristEnd_joint', [5.316333, 0, 1.617172]]]
 
-#Create rig controls
-createControl(rig_joint_names)
-cmds.select(cl=True)
-
-#Create IK controls
-ik_ctrl_info = [ik_joint_names[0][1], 'ctrl_ik_wrist', 'group_ctrl_IKwrist']
+#Create IK control
+ik_ctrl_info = [ik_joint_names[2][1], 'ctrl_ik_wrist', 'group_ctrl_IKwrist']
 createControl(ik_ctrl_info)
 
-#Create IK controls
-fk_ctrl_info = []
+#Create FK controls
+fk_ctrl_info = [[fk_joint_names[0][1], 'ctrl_fk_shoulder' ,'group_ctrl_FKshoulder'], [fk_joint_names[1][1], 'ctrl_fk_elbow', 'group_ctrl_FKelbow'], fk_joint_names[2][1], 'ctrl_fk_wrist','group_ctrl_FKwrist']
+createControl(fk_ctrl_info)
+
+####################################
+##Create Pole vector for IK Handle##
+####################################
+#Might need to replace current PV position with the function from Week 5 video
+pvctrlinfo = [ik_joint_names[1][1], 'ctrl_poleVector_arm', 'group_ctrl_poleVector_arm']
+createControl(pvctrlinfo)

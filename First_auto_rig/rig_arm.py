@@ -1,8 +1,30 @@
 import maya.cmds as cmds
 
-#################
-##Create joints##
-#################
+
+def createJoint(joint_info):
+	'''
+	Takes in joint info as an argument and iterates through the name and position to create joint
+	'''
+	for i in joint_info:
+		cmds.joint(n=i[0], p=i[1])
+
+
+def createControl(ctrlInfo):
+	'''
+	Iterates through joint_names+positions to create control curves
+	'''
+	for info in jointInfo:
+		#Get WS position of joint
+		pos = info[0]
+		#Create an empty group
+		ctrl_group = cmds.group(em=1, n=info[2])
+		#Create circle control object
+		ctrl = cmds.circle(n=info[1])
+		#Parent the control to the group
+		cmds.parent(ctrl,ctrl_group)
+		#Move the group to the joint
+		cmds.xform(ctrl_group, t = pos, ws = True)
+
 
 #Hold IK joint names + positions
 ik_joint_names = [['ik_shoulder_joint', [-7.253066, 0, 0.590704]],['ik_elbow_joint', [-1.365397, 0, -0.939316]], ['ik_wrist_joint', [4.193028, 0, 0.861846]], ['ik_wristEnd_joint', [5.316333, 0, 1.617172]]]
@@ -11,14 +33,10 @@ fk_joint_names = [['fk_shoulder_joint', [-7.253066, 0, 0.590704]],['fk_elbow_joi
 #Hold rig joint names + positions
 rig_joint_names = [['rig_shoulder_joint', [-7.253066, 0, 0.590704]],['rig_elbow_joint', [-1.365397, 0, -0.939316]], ['rig_wrist_joint', [4.193028, 0, 0.861846]], ['rig_wristEnd_joint', [5.316333, 0, 1.617172]]]
 
-'''
-Function to create joints: 
-Uses joint names variable as an argument and iterates through the name and position
 
-'''
-def createJoint(joint_info):
-	for i in joint_info:
-		cmds.joint(n=i[0], p=i[1])
+#################
+##Create joints##
+#################
 
 #Create IK joints
 createJoint(ik_joint_names)
@@ -40,21 +58,13 @@ cmds.select(cl=True)
 #1st Step: Create IK Handle
 cmds.ikHandle(n='ikhandle_arm', sj='ik_shoulder_joint', ee='ik_wrist_joint', sol='ikRPsolver',p = 2, w = 1)
 
-
 #2nd Step: Create IK control
+ik_ctrl_info = [ik_joint_names[2][1], 'ctrl_ik_wrist', 'group_ctrl_IKwrist']
+createControl(ik_ctrl_info)
 
-#Query ik wrist joint world space position
-ik_wrist_joint_pos = cmds.xform('ik_wrist_joint',q=True, t = True, ws = True)
-#Create empty group
-cmds.group(em=1, n='group_ctrl_IKwrist')
-#Create IK control handle(circle)
-cmds.circle(n='ctrl_ik_wrist', )
-#Parent the group to the control
-cmds.parent('ctrl_ik_wrist','group_ctrl_IKwrist')
-#Move the group pivot to the wrist joint
-cmds.xform('group_ctrl_IKwrist', t = ik_wrist_joint_pos, ws = True)
-#Parent control to the IK Handle
+#3rd Step: Parent IK handle to the control
 cmds.parent('ikhandle_arm','ctrl_ik_wrist')
+
 #Deselect
 cmds.select(cl=True)
 
@@ -63,33 +73,11 @@ cmds.select(cl=True)
 ##Create FK Rig##
 #################
 
-#FK Joint world space positions
-fk_shoulder_joint_pos = cmds.xform('fk_shoulder_joint',q=True, t = True, ws = True)
-fk_elbow_joint_pos = cmds.xform('fk_elbow_joint',q=True, t = True, ws = True)
-fk_wrist_joint_pos = cmds.xform('fk_wrist_joint',q=True, t = True, ws = True) 
+#Create FK controls
+fk_ctrl_info = [[fk_joint_names[0][1], 'ctrl_fk_shoulder' ,'group_ctrl_FKshoulder'], [fk_joint_names[1][1], 'ctrl_fk_elbow', 'group_ctrl_FKelbow'], fk_joint_names[2][1], 'ctrl_fk_wrist','group_ctrl_FKwrist']
+createControl(fk_ctrl_info)
+cmds.select(cl=True)
 
-
-###################
-##Create Controls##
-###################
-'''
-Function to create controls
-'''
-def createControl(group_name,ctrl_name,intended_joint):
-	#Create empty group
-	cmds.group(em=1, n= group_name)
-	#Create FK control handle(circle)
-	cmds.circle(n= ctrl_name)
-	#Parent the group to the control
-	cmds.parent(ctrl_name,group_name)
-	#Move the group to the wrist joint
-	cmds.xform(group_name, t = intended_joint, ws = True)
-	cmds.select(cl=True)
-	
-#Run function to create shoulder, elbow and wrist controls
-createControl('group_ctrl_FKshoulder','ctrl_fk_shoulder',fk_shoulder_joint_pos)
-createControl('group_ctrl_FKelbow','ctrl_fk_elbow',fk_elbow_joint_pos)
-createControl('group_ctrl_FKwrist','ctrl_fk_wrist',fk_wrist_joint_pos)
 
 ####################################
 ##Create Pole vector for IK Handle##
