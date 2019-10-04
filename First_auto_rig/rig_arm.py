@@ -13,7 +13,7 @@ def createControl(ctrlInfo):
 	'''
 	Iterates through joint_names+positions to create control curves
 	'''
-	for info in jointInfo:
+	for info in ctrlInfo:
 		#Get WS position of joint
 		pos = info[0]
 		#Create an empty group
@@ -58,8 +58,8 @@ cmds.select(cl=True)
 #1st Step: Create IK Handle
 cmds.ikHandle(n='ikhandle_arm', sj='ik_shoulder_joint', ee='ik_wrist_joint', sol='ikRPsolver',p = 2, w = 1)
 
-#2nd Step: Create IK control
-ik_ctrl_info = [ik_joint_names[2][1], 'ctrl_ik_wrist', 'group_ctrl_IKwrist']
+#2nd Step: Define info to be passed into createControl function Create IK control
+ik_ctrl_info = [[ik_joint_names[2][1], 'ctrl_ik_wrist', 'group_ctrl_IKwrist']]
 createControl(ik_ctrl_info)
 
 #3rd Step: Parent IK handle to the control
@@ -92,6 +92,12 @@ cmds.xform('elbow_pole_vector', t = ik_elbow_joint_pos, ws = True)
 cmds.setAttr('elbow_pole_vector.translateZ', -4.0,)
 #Create Pole Vector Constraint
 cmds.poleVectorConstraint('elbow_pole_vector', 'ikhandle_arm')
+
+##################################################
+##Orient constraint IK wrist joint to IK control##
+##################################################
+#cmds.orientConstraint(ik_ctrl_info[0][1], ik_joint_names[2][0], mo = True)
+
 
 
 '''Connect IK and FK to rig joints'''
