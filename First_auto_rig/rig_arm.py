@@ -96,7 +96,7 @@ cmds.poleVectorConstraint('elbow_pole_vector', 'ikhandle_arm')
 ##################################################
 ##Orient constraint IK wrist joint to IK control##
 ##################################################
-#cmds.orientConstraint(ik_ctrl_info[0][1], ik_joint_names[2][0], mo = True)
+cmds.orientConstraint(ik_ctrl_info[0][1], ik_joint_names[2][0], mo = True)
 
 
 
