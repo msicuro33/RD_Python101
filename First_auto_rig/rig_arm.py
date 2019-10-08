@@ -58,7 +58,7 @@ cmds.select(cl=True)
 #1st Step: Create IK Handle
 cmds.ikHandle(n='ikhandle_arm', sj='ik_shoulder_joint', ee='ik_wrist_joint', sol='ikRPsolver',p = 2, w = 1)
 
-#2nd Step: Define info to be passed into createControl function Create IK control
+#2nd Step: Define info to be passed into createControl function to create IK control
 ik_ctrl_info = [[ik_joint_names[2][1], 'ctrl_ik_wrist', 'group_ctrl_IKwrist']]
 createControl(ik_ctrl_info)
 
@@ -74,7 +74,7 @@ cmds.select(cl=True)
 #################
 
 #Create FK controls
-fk_ctrl_info = [[fk_joint_names[0][1], 'ctrl_fk_shoulder' ,'group_ctrl_FKshoulder'], [fk_joint_names[1][1], 'ctrl_fk_elbow', 'group_ctrl_FKelbow'], fk_joint_names[2][1], 'ctrl_fk_wrist','group_ctrl_FKwrist']
+fk_ctrl_info = [[fk_joint_names[0][1], 'ctrl_fk_shoulder' ,'group_ctrl_FKshoulder'], [fk_joint_names[1][1], 'ctrl_fk_elbow', 'group_ctrl_FKelbow'], [fk_joint_names[2][1], 'ctrl_fk_wrist','group_ctrl_FKwrist']]
 createControl(fk_ctrl_info)
 cmds.select(cl=True)
 
