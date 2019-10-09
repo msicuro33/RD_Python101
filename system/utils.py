@@ -5,7 +5,7 @@ import tempfile
 def writeJson(fileName,data):
 	with open(fileName, 'w') as outfile:
 		json.dump(data, outfile)
-	file.close(oufile)
+	file.close(outfile)
 
 def readJson(fileName):
 	with open(fileName, 'r') as outfile:

@@ -1,5 +1,5 @@
 import maya.cmds as cmds
-
+import json
 
 def createJoint(joint_info):
 	'''
