@@ -1,5 +1,7 @@
 import maya.cmds as cmds
 import json
+import os
+import system.utils as utils
 
 #Hold IK joint names + positions
 ik_joint_names = [['ik_shoulder_joint', [-7.253066, 0, 0.590704]],['ik_elbow_joint', [-1.365397, 0, -0.939316]], ['ik_wrist_joint', [4.193028, 0, 0.861846]], ['ik_wristEnd_joint', [5.316333, 0, 1.617172]]]
@@ -12,6 +14,12 @@ rig_joint_names = [['rig_shoulder_joint', [-7.253066, 0, 0.590704]],['rig_elbow_
 class Rig_Arm:
 	"""docstring for ClassName"""
 	
+	def __init__(self):
+		#Get the joint list from the arm json file
+		data_path = os.environ["RDOJO_DATA"] + "rig/arm.json"
+		#Use the read json function
+		#Load the json into a dictionary
+
 	def rig_arm(self):
 		#################
 		##Create joints##
