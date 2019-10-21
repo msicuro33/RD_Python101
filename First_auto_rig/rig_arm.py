@@ -18,7 +18,9 @@ class Rig_Arm:
 		#Get the joint list from the arm json file
 		data_path = os.environ["RDOJO_DATA"] + "rig/arm.json"
 		#Use the read json function
+		data = utils.readJson(data_path)
 		#Load the json into a dictionary
+		self.module_info = json.loads(data)
 
 	def rig_arm(self):
 		#################
