@@ -2,13 +2,6 @@ import maya.cmds as cmds
 import json
 import os
 import system.utils as utils
-
-#Hold IK joint names + positions
-ik_joint_names = [['ik_shoulder_joint', [-7.253066, 0, 0.590704]],['ik_elbow_joint', [-1.365397, 0, -0.939316]], ['ik_wrist_joint', [4.193028, 0, 0.861846]], ['ik_wristEnd_joint', [5.316333, 0, 1.617172]]]
-#Hold FK joint names + positions
-fk_joint_names = [['fk_shoulder_joint', [-7.253066, 0, 0.590704]],['fk_elbow_joint', [-1.365397, 0, -0.939316]], ['fk_wrist_joint', [4.193028, 0, 0.861846]], ['fk_wristEnd_joint', [5.316333, 0, 1.617172]]]
-#Hold rig joint names + positions
-rig_joint_names = [['rig_shoulder_joint', [-7.253066, 0, 0.590704]],['rig_elbow_joint', [-1.365397, 0, -0.939316]], ['rig_wrist_joint', [4.193028, 0, 0.861846]], ['rig_wristEnd_joint', [5.316333, 0, 1.617172]]]
 		
 
 class Rig_Arm:
@@ -21,6 +14,9 @@ class Rig_Arm:
 		data = utils.readJson(data_path)
 		#Load the json into a dictionary
 		self.module_info = json.loads(data)
+		'''NOTE: If we want to build the arm from some set of joints
+		in the scene, we could overwrite self.module_info['positions']'''
+
 
 	def rig_arm(self):
 		#################
@@ -28,15 +24,15 @@ class Rig_Arm:
 		#################
 
 		#Create IK joints
-		self.createJoint(ik_joint_names)
+		self.createJoint(self.module_info['ik_joints'])
 		cmds.select(cl=True)
 
 		#Create FK joints
-		self.createJoint(fk_joint_names)
+		self.createJoint(self.module_info['fk_joints'])
 		cmds.select(cl=True)
 
 		#Create rig joints
-		self.createJoint(rig_joint_names)
+		self.createJoint(self.module_info['rig_joints'])
 		cmds.select(cl=True)
 
 
@@ -45,11 +41,12 @@ class Rig_Arm:
 		#################
 
 		#1st Step: Create IK Handle
-		cmds.ikHandle(n='ikhandle_arm', sj='ik_shoulder_joint', ee='ik_wrist_joint', sol='ikRPsolver',p = 2, w = 1)
+		cmds.ikHandle(n=self.module_info['ik_controls'][1], sj=self.module_info['ik_joints'][0], ee=self.module_info['ik_joints'][2], sol='ikRPsolver',p = 2, w = 1)
 
 		#2nd Step: Define info to be passed into createControl function to create IK control
-		ik_ctrl_info = [[ik_joint_names[2][1], 'ctrl_ik_wrist', 'group_ctrl_IKwrist']]
-		self.createControl(ik_ctrl_info)
+		self.createControl([[self.module_info['positions'][2], self.module_info['ik_controls'][0]]])
+		#Thought it should be: self.createControl([[self.module_info['positions'][2], self.module_info['ik_controls'][0], self.module_info['ik_controls'][1]]])
+		#But there isn't a name in the data for an IK ctrlgroup name
 
 		#3rd Step: Parent IK handle to the control
 		cmds.parent('ikhandle_arm','ctrl_ik_wrist')
@@ -63,8 +60,8 @@ class Rig_Arm:
 		#################
 
 		#Create FK controls
-		fk_ctrl_info = [[fk_joint_names[0][1], 'ctrl_fk_shoulder' ,'group_ctrl_FKshoulder'], [fk_joint_names[1][1], 'ctrl_fk_elbow', 'group_ctrl_FKelbow'], [fk_joint_names[2][1], 'ctrl_fk_wrist','group_ctrl_FKwrist']]
-		self.createControl(fk_ctrl_info)
+		fk_ctrl_info = self.createControl([[self.module_info['positions'][0],self.module_info['fk_controls'][0]],
+		[self.module_info['positions'][1],self.module_info['fk_controls'][1]], [self.module_info['positions'][2],self.module_info['fk_controls'][2]]])
 		cmds.select(cl=True)
 
 
@@ -73,9 +70,9 @@ class Rig_Arm:
 		####################################
 		
 		#Query IK elbow joint world space position
-		ik_elbow_joint_pos = cmds.xform('ik_elbow_joint',q=True, t = True, ws = True)
+		ik_elbow_joint_pos = cmds.xform(self.module_info['ik_joints'][1], q=True, t = True, ws = True)
 		#Create Locator for Pole Vector
-		cmds.spaceLocator(n='elbow_pole_vector')
+		cmds.spaceLocator(n= self.module_info['ik_controls'][2])
 		#Move the Locator to the elbow joint
 		cmds.xform('elbow_pole_vector', t = ik_elbow_joint_pos, ws = True)
 		#Move the Locator away from the elbow in the Z axis
@@ -86,7 +83,7 @@ class Rig_Arm:
 		##################################################
 		##Orient constraint IK wrist joint to IK control##
 		##################################################
-		cmds.orientConstraint(ik_ctrl_info[0][1], ik_joint_names[2][0], mo = True)
+		cmds.orientConstraint(self.module_info['ik_controls'][0], self.module_info['ik_joints'][2], mo = True)
 
 
 
@@ -100,8 +97,8 @@ class Rig_Arm:
 		'''
 		Takes in joint info as an argument and iterates through the name and position to create joint
 		'''
-		for i in joint_info:
-			cmds.joint(n=i[0], p=i[1])
+		for i in in range len(joint_info):
+			cmds.joint(n=joint_info[i], p=self.module_info['positions'][i])
 
 
 	def createControl(self, ctrlInfo):
