@@ -1,4 +1,5 @@
 import maya.cmds as cmds
+import os
 
 print("Hi I'm in Startup!")
 
@@ -15,3 +16,5 @@ cmds.currentUnit(linear = 'cm')
 os.environ["RDOJO_DATA"] = C:/Users/MATTI/Documents/GitHub/RD_Python101/data
 
 import py101_user_interface.rig_user_interface as ui
+reload(ui)
+ui.RDojo_UI()
