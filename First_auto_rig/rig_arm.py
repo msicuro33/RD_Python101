@@ -64,6 +64,9 @@ class Rig_Arm:
 		[self.module_info['positions'][1],self.module_info['fk_controls'][1]], [self.module_info['positions'][2],self.module_info['fk_controls'][2]]])
 		cmds.select(cl=True)
 
+		#Parent FK controls
+		
+
 
 		####################################
 		##Create Pole vector for IK Handle##
@@ -97,7 +100,7 @@ class Rig_Arm:
 		'''
 		Takes in joint info as an argument and iterates through the name and position to create joint
 		'''
-		for i in in range len(joint_info):
+		for i in in range(len(joint_info)):
 			cmds.joint(n=joint_info[i], p=self.module_info['positions'][i])
 
 
