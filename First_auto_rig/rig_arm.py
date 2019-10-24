@@ -65,7 +65,8 @@ class Rig_Arm:
 		cmds.select(cl=True)
 
 		#Parent FK controls
-		
+		cmds.parent(fk_ctrl_info[0][0],fk_ctrl_info[1][1][0])
+		cmds.parent(fk_ctrl_info[1][0],fk_ctrl_info[2][1][0])
 
 
 		####################################
