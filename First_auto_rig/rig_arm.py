@@ -109,17 +109,21 @@ class Rig_Arm:
 		'''
 		Iterates through joint_names+positions to create control curves
 		'''
+		control_info = []
 		for info in ctrlInfo:
 			#Get WS position of joint
 			pos = info[0]
 			#Create an empty group
-			ctrl_group = cmds.group(em=1, n=info[2])
+			ctrl_group = cmds.group(em=1, n="group_" + info[1])
 			#Create circle control object
 			ctrl = cmds.circle(n=info[1])
-			#Parent the control to the group
+			#Parent the control under the group
 			cmds.parent(ctrl,ctrl_group)
 			#Move the group to the joint
 			cmds.xform(ctrl_group, t = pos, ws = True)
+			#Append control info to control_info List
+			control_info.append([ctrl_group, ctrl])
+		return(control_info)
 
 
 
