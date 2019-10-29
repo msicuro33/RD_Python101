@@ -13,7 +13,7 @@ cmds.currentUnit(time = 'ntsc')
 cmds.currentUnit(linear = 'cm')
 
 #Set a system path to data files with the OS module
-os.environ["RDOJO_DATA"] = C:/Users/MATTI/Documents/GitHub/RD_Python101/data
+os.environ["RDOJO_DATA"] = "C:/Users/MATTI/Documents/GitHub/RD_Python101/data"
 
 import py101_user_interface.rig_user_interface as ui
 reload(ui)
