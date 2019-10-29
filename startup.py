@@ -17,4 +17,4 @@ os.environ["RDOJO_DATA"] = "C:/Users/MATTI/Documents/GitHub/RD_Python101/data"
 
 import py101_user_interface.rig_user_interface as ui
 reload(ui)
-rig_user_interface.RDojo_UI()
+ui.RDojo_UI()
