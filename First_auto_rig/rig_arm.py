@@ -101,7 +101,7 @@ class Rig_Arm:
 		'''
 		Takes in joint info as an argument and iterates through the name and position to create joint
 		'''
-		for i in in range(len(joint_info)):
+		for i in range(len(joint_info)):
 			cmds.joint(n=joint_info[i], p=self.module_info['positions'][i])
 
 
