@@ -9,7 +9,7 @@ class Rig_Arm:
 	
 	def __init__(self):
 		#Get the joint list from the arm json file
-		data_path = os.environ["RDOJO_DATA"] + "rig/arm.json"
+		data_path = os.environ["RDOJO_DATA"] + "/rig/arm.json"
 		#Use the read json function
 		data = utils.readJson(data_path)
 		#Load the json into a dictionary
@@ -82,7 +82,7 @@ class Rig_Arm:
 		#Move the Locator away from the elbow in the Z axis
 		cmds.setAttr('elbow_pole_vector.translateZ', -4.0,)
 		#Create Pole Vector Constraint
-		cmds.poleVectorConstraint(elbow_Locator, ik_handle)
+		cmds.poleVectorConstraint(self.module_info['ik_controls'][2], self.module_info['ik_controls'][1])
 
 		##################################################
 		##Orient constraint IK wrist joint to IK control##
