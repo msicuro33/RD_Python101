@@ -27,18 +27,28 @@ ballPos = cmds.xform("left_ik_joint_ball", q=True, ws=True, t=True)
 toePos = cmds.xform("left_ik_joint_toe", q=True, ws=True, t=True)
 
 #Move the Toe, Ball and Flap groups to corresponding joints
-cmds.xform("grp_toe", ws=True, t=toePos)
-cmds.xform("grp_ball", ws=True, t=ballPos)
-cmds.xform("grp_flap", ws=True, t=ballPos)
+cmds.xform("group_toe_pivot", ws=True, t=toePos)
+cmds.xform("group_ball_pivot", ws=True, t=ballPos)
+cmds.xform("group_flap", ws=True, t=ballPos)
 
 #Parent the groups accordingly
-cmds.parent('grp_heel', 'grp_footPivot')
-cmds.parent('grp_toe', 'grp_heel')
-cmds.parent('grp_ball', 'grp_toe')
-cmds.parent('grp_flap', 'grp_toe')
-cmds.parent('ikh_leg', 'grp_ball')
-cmds.parent('ikh_ball', 'grp_ball')
-cmds.parent('ikh_toe', 'grp_flap')
+cmds.parent('group_heel_pivot', 'group_foot_Pivot')
+cmds.parent('group_toe_pivot', 'group_heel_pivot')
+cmds.parent('group_ball_pivot', 'group_toe_pivot')
+cmds.parent('group_flap', 'group_toe_pivot')
+#Parent ikHandles to pivot groups
+cmds.parent('left_ik_Handle_leg', 'group_ball_pivot')
+cmds.parent('left_ik_Handle_ball', 'group_ball_pivot')
+cmds.parent('left_ik_Handle_toe', 'group_flap')
 
-#Parent the 
-cmds.parent('group_foot_pivot', 'left_ik_Handle_leg')
+#Create IK control for the foot
+cmds.circle(n='left_ik_control_leg')
+
+#Move the control pivot to the ankle joint
+cmds.xform('left_ik_control_leg', t = anklePos, ws = True)
+
+#Freeze Transformations on control
+cmds.makeIdentity('left_ik_control_leg', apply=True, translate=True, normal=0, preserveNormals=True)
+
+#Parent the foot pivot to the foot control
+cmds.parent('group_foot_pivot', 'left_ik_control_leg')
