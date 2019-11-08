@@ -16,7 +16,7 @@ cmds.ikHandle(n= "left_ik_Handle_ball", sj= "left_ik_joint_ankle", ee= "left_ik_
 cmds.ikHandle(n= "left_ik_Handle_toe", sj= "left_ik_joint_ball", ee= "left_ik_joint_toe", sol = "ikSCsolver")
 
 '''Create groups for foot pivots'''
-footGroups = ["group_foot_Pivot", "group_toe_pivot", "group_heel_pivot", "group_ball_pivot", "group_flap"]
+footGroups = ["group_foot_pivot", "group_toe_pivot", "group_heel_pivot", "group_ball_pivot", "group_flap"]
 for item in footGroups:
 		cmds.group(n=item, empty=True, world=True)
 
@@ -42,13 +42,40 @@ cmds.parent('left_ik_Handle_ball', 'group_ball_pivot')
 cmds.parent('left_ik_Handle_toe', 'group_flap')
 
 #Create IK control for the foot
-cmds.circle(n='left_ik_control_leg')
+cmds.circle(n='left_ik_leg_control')
 
 #Move the control pivot to the ankle joint
-cmds.xform('left_ik_control_leg', t = anklePos, ws = True)
+cmds.xform('left_ik_leg_control', t = anklePos, ws = True)
 
 #Freeze Transformations on control
-cmds.makeIdentity('left_ik_control_leg', apply=True, translate=True, normal=0, preserveNormals=True)
+cmds.makeIdentity('left_ik_leg_control', apply=True, translate=True, normal=0, preserveNormals=True)
 
 #Parent the foot pivot to the foot control
-cmds.parent('group_foot_pivot', 'left_ik_control_leg')
+cmds.parent('group_foot_pivot', 'left_ik_leg_control')
+
+#Create locator and snap to pelvis
+cmds.spaceLocator(n = 'left_locatorPv_leg')
+#pelvisPos = cmds.xform("joint_pelvis", q=True, ws=True, t=True)
+cmds.xform('left_locatorPv_leg', ws = True, t = hipPos)
+
+#Pole vector constrain ik handle and locator
+cmds.poleVectorConstraint('left_locatorPv_leg','left_ik_Handle_leg', weight = 1)
+
+#Create a float attribute called “Twist” on the ikFootCtrl controller.
+cmds.addAttr('left_ik_control_leg', shortName = "Twist", longName = "Twist", defaultValue = 0, keyable = True)
+
+#Create a plusMinusAverage utility, and call it pmaNode_LegTwist.
+cmds.shadingNode("plusMinusAverage", asUtility=True, n='pmaNode_LegTwist'
+#Create a multiplyDivide utility and call it mdNode_LegTwist.
+cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_LegTwist')
+
+#Set up the connections
+cmds.connectAttr('left_ik_control_leg.Twist', 'mdNode_LegTwist.input1X')
+cmds.connectAttr('left_ik_control_leg.ry', 'mdNode_LegTwist.input1Y')
+cmds.connectAttr('joint_pelvis.ry', 'mdNode_LegTwist.input1Z')
+cmds.setAttr('mdNode_LegTwist.input2X', -1)
+cmds.setAttr('mdNode_LegTwist.input2Y', -1)
+cmds.setAttr('mdNode_LegTwist.input2Z', -1)
+cmds.connectAttr('mdNode_LegTwist.input1X', 'pmaNode_LegTwist.input1D[0]')
+cmds.connectAttr('mdNode_LegTwist.input1Y', 'pmaNode_LegTwist.input1D[1]')
+cmds.connectAttr('pmaNode_LegTwist.output1D', 'left_ik_Handle_leg.twist')
