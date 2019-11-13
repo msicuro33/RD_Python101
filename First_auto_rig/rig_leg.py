@@ -72,7 +72,7 @@ cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_LegTwist')
 #Set up the connections
 cmds.connectAttr('left_ik_control_leg.Twist', 'mdNode_LegTwist.input1X')
 cmds.connectAttr('left_ik_control_leg.ry', 'mdNode_LegTwist.input1Y')
-cmds.connectAttr('joint_pelvis.ry', 'mdNode_LegTwist.input1Z')
+cmds.connectAttr('left_ik_joint_hip.ry', 'mdNode_LegTwist.input1Z')
 cmds.setAttr('mdNode_LegTwist.input2X', -1)
 cmds.setAttr('mdNode_LegTwist.input2Y', -1)
 cmds.setAttr('mdNode_LegTwist.input2Z', -1)
