@@ -79,3 +79,12 @@ cmds.setAttr('mdNode_LegTwist.input2Z', -1)
 cmds.connectAttr('mdNode_LegTwist.input1X', 'pmaNode_LegTwist.input1D[0]')
 cmds.connectAttr('mdNode_LegTwist.input1Y', 'pmaNode_LegTwist.input1D[1]')
 cmds.connectAttr('pmaNode_LegTwist.output1D', 'left_ik_Handle_leg.twist')
+
+#Create nodes needed for stretchy IK
+cmds.shadingNode("addDoubleLinear", asUtility=True, n='adlNode_LegStretch'
+cmds.shadingNode("clamp", asUtility=True, n='clampNode_LegStretch')
+cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_LegStretch'
+cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_KneeStretch'
+cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_AnkleStretch'
+
+
