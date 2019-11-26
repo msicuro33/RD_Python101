@@ -62,7 +62,7 @@ cmds.xform('left_locatorPv_leg', ws = True, t = hipPos)
 cmds.poleVectorConstraint('left_locatorPv_leg','left_ik_Handle_leg', weight = 1)
 
 #Create a float attribute called “Twist” on the ikFootCtrl controller.
-cmds.addAttr('left_ik_control_leg', shortName = "Twist", longName = "Twist", defaultValue = 0, keyable = True)
+cmds.addAttr('left_ik_leg_control', shortName = "Twist", longName = "Twist", defaultValue = 0, keyable = True)
 
 #Create a plusMinusAverage utility, and call it pmaNode_LegTwist.
 cmds.shadingNode("plusMinusAverage", asUtility=True, n='pmaNode_LegTwist'
@@ -70,8 +70,8 @@ cmds.shadingNode("plusMinusAverage", asUtility=True, n='pmaNode_LegTwist'
 cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_LegTwist')
 
 #Set up the connections
-cmds.connectAttr('left_ik_control_leg.Twist', 'mdNode_LegTwist.input1X')
-cmds.connectAttr('left_ik_control_leg.ry', 'mdNode_LegTwist.input1Y')
+cmds.connectAttr('left_ik_leg_control.Twist', 'mdNode_LegTwist.input1X')
+cmds.connectAttr('left_ik_leg_control.ry', 'mdNode_LegTwist.input1Y')
 cmds.connectAttr('left_ik_joint_hip.ry', 'mdNode_LegTwist.input1Z')
 cmds.setAttr('mdNode_LegTwist.input2X', -1)
 cmds.setAttr('mdNode_LegTwist.input2Y', -1)
@@ -87,4 +87,26 @@ cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_LegStretch'
 cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_KneeStretch'
 cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_AnkleStretch'
 
+#Add a "Stretch" attribute to ctrl_leg
+cmds.select('left_ik_leg_control')
+cmds.addAttr(shortName = "Stretch", longName = "Stretch", defaultValue = 0)
 
+#Creat a distance tool to measure distance between hip and ankle joints
+'''Use Create/Measure Tools/Distance Tool. Snap one locator to
+the ik hip joint and name it ‘lctrDis_hip’. Parent this locator to the pelvis joint
+Snap the other locator to ikj_ankle and name it ‘lctrDis_ankle’.
+Parent this locator to the heel group'''
+
+#"hipPos" already exists
+#hipPos = cmds.xform('ikj_hip', q=True, ws=True, t=True)
+
+#"anklePos" already exists
+#anklePos = cmds.xform('ikj_ankle', q=True, ws=True, t=True)
+
+disDim = cmds.distanceDimension(sp=(hipPos), ep=(anklePos))
+
+cmds.rename('distanceDimension1', 'disDimNode_legStretch')
+cmds.rename('locator1', 'lctrDis_hip')
+cmds.rename('locator2', 'lctrDis_ankle')
+cmds.parent('lctrDis_hip', 'jnt_pelvis')
+cmds.parent('lctrDis_ankle', 'grp_ball')
