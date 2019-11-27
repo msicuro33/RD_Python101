@@ -106,7 +106,7 @@ Parent this locator to the heel group'''
 disDim = cmds.distanceDimension(sp=(hipPos), ep=(anklePos))
 
 cmds.rename('distanceDimension1', 'disDimNode_legStretch')
-cmds.rename('locator1', 'lctrDis_hip')
-cmds.rename('locator2', 'lctrDis_ankle')
-cmds.parent('lctrDis_hip', 'jnt_pelvis')
-cmds.parent('lctrDis_ankle', 'grp_ball')
+cmds.rename('locator1', 'left_locator_hip_Distance')
+cmds.rename('locator2', 'left_locator_ankle_Distance')
+cmds.parent('left_locator_hip_Distance', 'joint_pelvis')
+cmds.parent('left_locator_ankle_Distance', 'group_ball_pivot')
