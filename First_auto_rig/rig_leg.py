@@ -88,8 +88,8 @@ cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_KneeStretch'
 cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_AnkleStretch'
 
 #Add a "Stretch" attribute to ctrl_leg
-cmds.select('left_ik_leg_control')
-cmds.addAttr(shortName = "Stretch", longName = "Stretch", defaultValue = 0)
+cmds.addAttr('left_ik_control_leg', shortName = "Stretch", longName = "Stretch", defaultValue = 0)
+cmds.setAttr('left_ik_control_leg.Stretch', e=True, k = True)
 
 #Create a distance tool to measure distance between hip and ankle joints
 '''Use Create/Measure Tools/Distance Tool. Snap one locator to
