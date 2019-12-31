@@ -91,7 +91,7 @@ cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_AnkleStretch'
 cmds.select('left_ik_leg_control')
 cmds.addAttr(shortName = "Stretch", longName = "Stretch", defaultValue = 0)
 
-#Creat a distance tool to measure distance between hip and ankle joints
+#Create a distance tool to measure distance between hip and ankle joints
 '''Use Create/Measure Tools/Distance Tool. Snap one locator to
 the ik hip joint and name it ‘lctrDis_hip’. Parent this locator to the pelvis joint
 Snap the other locator to ikj_ankle and name it ‘lctrDis_ankle’.
