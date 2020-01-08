@@ -102,7 +102,7 @@ Parent this locator to the heel group'''
 #"anklePos" already exists
 #anklePos = cmds.xform('ikj_ankle', q=True, ws=True, t=True)
 
-disDim = cmds.distanceDimension(sp=(hipPos), ep=(anklePos))
+disDim = cmds.distanceDimension(startPoint=(hipPos), endPoint=(anklePos))
 
 cmds.rename('distanceDimension1', 'disDimNode_legStretch')
 cmds.rename('locator1', 'left_locator_hip_Distance')
