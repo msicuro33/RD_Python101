@@ -98,9 +98,14 @@ Parent this locator to the heel group'''
 
 #"hipPos" already exists
 #hipPos = cmds.xform('ikj_hip', q=True, ws=True, t=True)
-
 #"anklePos" already exists
 #anklePos = cmds.xform('ikj_ankle', q=True, ws=True, t=True)
+
+#Make a new locator so the Distance tool doesn't use the "left_locatorPv_leg" 
+#as the starting point
+tempLoc = cmds.spaceLocator()
+cmds.xform(tempLoc, ws = True, t = hipPos)
+
 
 disDim = cmds.distanceDimension(startPoint=(hipPos), endPoint=(anklePos))
 
@@ -109,3 +114,39 @@ cmds.rename('locator1', 'left_locator_hip_Distance')
 cmds.rename('locator2', 'left_locator_ankle_Distance')
 cmds.parent('left_locator_hip_Distance', 'joint_pelvis')
 cmds.parent('left_locator_ankle_Distance', 'group_ball_pivot')
+
+#Get the translate X value of the Knee and Ankle to get the length of the leg when fully extended
+kneeLen = cmds.getAttr('left_ik_joint_knee.tx')
+print(kneeLen)
+ankleLen = cmds.getAttr('left_ik_joint_ankle.tx')
+print(ankleLen)
+legLen = (ankleLen + kneeLen)
+print(legLen)
+
+#Enter the length values into the corresponding nodes
+cmds.setAttr('adlNode_LegStretch.input2', legLen)
+cmds.setAttr('mdNode_LegStretch.input2X', legLen)
+cmds.setAttr('mdNode_KneeStretch.input2X', kneeLen)
+cmds.setAttr('mdNode_AnkleStretch.input2X', ankleLen)
+
+#Connect the nodes to get the final stretch value that will be applied to our joints. 
+#The clamp node lets us control the amount of stretch
+cmds.connectAttr('left_ik_control_leg.Stretch', 'adlNode_LegStretch.input1')
+cmds.setAttr ("clampNode_LegStretch.minR", 12.800084)
+cmds.setAttr ("mdNode_LegStretch.operation", 2)
+
+
+#Connect the distance dimension so we always know the current length of the leg.
+cmds.connectAttr('disDimNode_legStretch.distance', 'clampNode_LegStretch.inputR')
+cmds.connectAttr('adlNode_LegStretch.output', 'clampNode_LegStretch.maxR')
+
+#Now we feed the total value into a multiply divide so we can distribute the value to our joints.
+cmds.connectAttr('clampNode_LegStretch.outputR', 'mdNode_LegStretch.input1X')
+cmds.connectAttr('mdNode_LegStretch.outputX', 'mdNode_KneeStretch.input1X')
+cmds.connectAttr('mdNode_LegStretch.outputX', 'mdNode_AnkleStretch.input1X')
+
+#Finally, we output our new values into the translateX of the knee and ankle joints.
+cmds.connectAttr('mdNode_KneeStretch.outputX', 'left_ik_joint_knee.tx')
+cmds.connectAttr('mdNode_AnkleStretch.outputX', 'left_ik_joint_ankle.tx')
+
+'''Step 7: Create the Foot Roll'''
