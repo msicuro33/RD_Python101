@@ -150,3 +150,84 @@ cmds.connectAttr('mdNode_KneeStretch.outputX', 'left_ik_joint_knee.tx')
 cmds.connectAttr('mdNode_AnkleStretch.outputX', 'left_ik_joint_ankle.tx')
 
 '''Step 7: Create the Foot Roll'''
+#Add a "Roll Break" and "Foot Roll" attribute to the leg control
+cmds.addAttr('left_ik_control_leg', shortName = "Roll_Break", longName = "Roll_Break", defaultValue = 0, keyable = True)
+cmds.addAttr('left_ik_control_leg', shortName = "Foot_Roll", longName = "Foot_Roll", defaultValue = 0, keyable = True)
+
+#Setup the foot roll and Create utility nodes
+cmds.shadingNode("condition", asUtility=True, n='conditionNode_ballRoll')
+cmds.shadingNode("condition", asUtility=True, n='conditionNode_negBallRoll')
+cmds.shadingNode("condition", asUtility=True, n='conditionNode_toeRoll')
+cmds.shadingNode("plusMinusAverage", asUtility=True, n='pmaNode_ballRoll')
+cmds.shadingNode("plusMinusAverage", asUtility=True, n='pmaNode_toeRoll')
+cmds.shadingNode("condition", asUtility=True, n='conditionNode_heelRoll')
+cmds.setAttr('pmaNode_toeRoll.operation', 2)
+cmds.setAttr("conditionNode_toeRoll.operation", 2)
+cmds.setAttr("conditionNode_toeRoll.colorIfFalseR", 0)
+cmds.setAttr("conditionNode_toeRoll.colorIfFalseG", 0)
+cmds.setAttr("conditionNode_toeRoll.colorIfFalseB", 0)
+cmds.setAttr('conditionNode_heelRoll.operation', 4)
+cmds.setAttr('conditionNode_heelRoll.colorIfFalseB', 0)
+cmds.setAttr('conditionNode_heelRoll.colorIfFalseR', 0)
+cmds.setAttr('conditionNode_heelRoll.colorIfFalseG', 0)
+cmds.setAttr("pmaNode_ballRoll.operation", 2)
+cmds.setAttr("conditionNode_negBallRoll.operation", 3)
+cmds.setAttr("conditionNode_ballRoll.operation", 3)
+
+#Setup Toe
+cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_toeRoll.firstTerm')
+cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_toeRoll.colorIfTrueR')
+cmds.connectAttr('left_ik_control_leg.Roll_Break', 'conditionNode_toeRoll.secondTerm')
+cmds.connectAttr('left_ik_control_leg.Roll_Break', 'conditionNode_toeRoll.colorIfFalseR')
+cmds.connectAttr('left_ik_control_leg.Roll_Break', 'pmaNode_toeRoll.input1D[1]')
+cmds.connectAttr('conditionNode_toeRoll.outColorR', 'pmaNode_toeRoll.input1D[0]')
+cmds.connectAttr('pmaNode_toeRoll.output1D', 'group_toe_pivot.rx')
+
+#Setup Heel
+cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_heelRoll.firstTerm')
+cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_heelRoll.colorIfTrueR')
+cmds.connectAttr('conditionNode_heelRoll.outColorR', 'group_heel_pivot.rotateX')
+
+#Setup Ball
+cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_ballRoll.firstTerm')
+cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_ballRoll.colorIfTrueR')
+cmds.connectAttr('left_ik_control_leg.Roll_Break', 'conditionNode_negBallRoll.secondTerm')
+cmds.connectAttr('left_ik_control_leg.Roll_Break', 'conditionNode_negBallRoll.colorIfTrueR')
+cmds.connectAttr('conditionNode_negBallRoll.outColorR', 'pmaNode_ballRoll.input1D[0]')
+cmds.connectAttr('group_toe_pivot.rx', 'pmaNode_ballRoll.input1D[1]')
+cmds.connectAttr('pmaNode_ballRoll.output1D', 'group_ball_pivot.rx')
+cmds.connectAttr('conditionNode_ballRoll.outColorR', 'conditionNode_negBallRoll.firstTerm')
+cmds.connectAttr('conditionNode_ballRoll.outColorR', 'conditionNode_negBallRoll.colorIfFalseR')
+
+#Make the Toe Flap attribute and connect to the flap group
+cmds.addAttr('left_ik_control_leg', shortName='Toe_Flap', longName='Toe_Flap', defaultValue= 0, keyable = True)
+cmds.connectAttr('left_ik_control_leg.Toe_Flap', 'group_flap.rx')
+
+'''Step 8: Pivot for Bank and Twist'''
+#Create a new control object for the foot pvot and move it to the Ball group
+cmds.circle(n='left_ctrl_footPivot')
+cmds.xform('left_ctrl_footPivot', t=ballPos)
+
+#Create an empty group for the foot pivot control
+cmds.group(n='group_ctrl_footPivot', empty=True)
+
+#Parent the foot pivot ctrl group to the footPivot control.
+cmds.parent('group_ctrl_footPivot', 'left_ctrl_footPivot')
+
+#Parent the ctrl_footPivot to ctrl_foot and freeze transforms (make identiy) on ctrl_footPivot.
+cmds.parent('left_ctrl_footPivot', 'left_ik_control_leg')
+cmds.makeIdentity('left_ctrl_footPivot', apply=True)
+
+#Now we will connect the grp_ctrl_footPivot.translate to grp_footPivot.rotatePivot
+cmds.connectAttr('group_ctrl_footPivot.translate', 'group_ctrl_footPivot.rotatePivot')
+
+#Move group_ctrl_footPivot to the position of the ball group.
+cmds.xform('group_ctrl_footPivot', t=ballPos)
+
+'''Wrap up:'''
+#Make a couple more attributes for twist and bank, then hook those up to the grp_footPivot.
+cmds.addAttr('left_ik_control_leg', shortName='Foot_Pivot', longName='Foot_Pivot', defaultValue = 0, keyable = True)
+cmds.addAttr('left_ik_control_leg', shortName='Foot_Bank', longName='Foot_Bank', defaultValue = 0, keyable = True)
+cmds.connectAttr('left_ik_control_leg.Foot_Pivot', 'group_foot_pivot.ry')
+cmds.connectAttr('left_ik_control_leg.Foot_Bank', 'group_foot_pivot.rz')
+
