@@ -43,7 +43,8 @@ class RDojo_UI(object):
  		cmds.separator(width = 10, horizontal = True, style = 'none', parent = self.UIElements["guiFlowLayout1"])
 
  		#Create the Rig Arm button
- 		self.UIElements["rig_button"] = cmds.button(label = "rig arm", width = buttonWidth, height = buttonHeight, backgroundColor = [0.2, 0.4, 0.2], parent = self.UIElements["guiFlowLayout1"], command = self.rigarm)
+ 		self.UIElements["rig_arm_button"] = cmds.button(label = "rig arm", width = buttonWidth, height = buttonHeight, backgroundColor = [0.2, 0.4, 0.2], parent = self.UIElements["guiFlowLayout1"], command = self.rigarm)
+ 		self.UIElements["rig_leg_button"] = cmds.button(label = "rig leg", width = buttonWidth, height = buttonHeight, backgroundColor = [0.2, 0.4, 0.2], parent = self.UIElements["guiFlowLayout1"])
 
  		#Show the window
  		cmds.showWindow(windowName)
