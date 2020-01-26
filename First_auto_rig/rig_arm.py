@@ -2,7 +2,7 @@ import maya.cmds as cmds
 import json
 import os
 import system.utils as utils
-		
+
 
 class Rig_Arm:
 	"""docstring for ClassName"""
@@ -101,8 +101,7 @@ class Rig_Arm:
 		'''
 		Takes in joint info as an argument and iterates through the name and position to create joint
 		'''
-		for i in range(len(joint_info)):
-			cmds.joint(n=joint_info[i], p=self.module_info['positions'][i])
+		[cmds.joint(n=joint_info[i], p=self.module_info['positions'][i]) for i in range(len(joint_info))]
 
 
 	def createControl(self, ctrlInfo):

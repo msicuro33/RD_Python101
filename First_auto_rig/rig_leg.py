@@ -32,7 +32,7 @@ cmds.xform("group_ball_pivot", ws=True, t=ballPos)
 cmds.xform("group_flap", ws=True, t=ballPos)
 
 #Parent the groups accordingly
-cmds.parent('group_heel_pivot', 'group_foot_Pivot')
+cmds.parent('group_heel_pivot', 'group_foot_pivot')
 cmds.parent('group_toe_pivot', 'group_heel_pivot')
 cmds.parent('group_ball_pivot', 'group_toe_pivot')
 cmds.parent('group_flap', 'group_toe_pivot')
@@ -65,7 +65,7 @@ cmds.poleVectorConstraint('left_locatorPv_leg','left_ik_Handle_leg', weight = 1)
 cmds.addAttr('left_ik_leg_control', shortName = "Twist", longName = "Twist", defaultValue = 0, keyable = True)
 
 #Create a plusMinusAverage utility, and call it pmaNode_LegTwist.
-cmds.shadingNode("plusMinusAverage", asUtility=True, n='pmaNode_LegTwist'
+cmds.shadingNode("plusMinusAverage", asUtility=True, n='pmaNode_LegTwist')
 #Create a multiplyDivide utility and call it mdNode_LegTwist.
 cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_LegTwist')
 
@@ -81,14 +81,14 @@ cmds.connectAttr('mdNode_LegTwist.input1Y', 'pmaNode_LegTwist.input1D[1]')
 cmds.connectAttr('pmaNode_LegTwist.output1D', 'left_ik_Handle_leg.twist')
 
 #Create nodes needed for stretchy IK
-cmds.shadingNode("addDoubleLinear", asUtility=True, n='adlNode_LegStretch'
+cmds.shadingNode("addDoubleLinear", asUtility=True, n='adlNode_LegStretch')
 cmds.shadingNode("clamp", asUtility=True, n='clampNode_LegStretch')
-cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_LegStretch'
-cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_KneeStretch'
-cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_AnkleStretch'
+cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_LegStretch')
+cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_KneeStretch')
+cmds.shadingNode("multiplyDivide", asUtility=True, n='mdNode_AnkleStretch')
 
 #Add a "Stretch" attribute to ctrl_leg
-cmds.addAttr('left_ik_control_leg', shortName = "Stretch", longName = "Stretch", defaultValue = 0, keyable = True)
+cmds.addAttr('left_ik_leg_control', shortName = "Stretch", longName = "Stretch", defaultValue = 0, keyable = True)
 
 #Create a distance tool to measure distance between hip and ankle joints
 '''Use Create/Measure Tools/Distance Tool. Snap one locator to
@@ -131,7 +131,7 @@ cmds.setAttr('mdNode_AnkleStretch.input2X', ankleLen)
 
 #Connect the nodes to get the final stretch value that will be applied to our joints. 
 #The clamp node lets us control the amount of stretch
-cmds.connectAttr('left_ik_control_leg.Stretch', 'adlNode_LegStretch.input1')
+cmds.connectAttr('left_ik_leg_control.Stretch', 'adlNode_LegStretch.input1')
 cmds.setAttr ("clampNode_LegStretch.minR", 12.800084)
 cmds.setAttr ("mdNode_LegStretch.operation", 2)
 
@@ -151,8 +151,8 @@ cmds.connectAttr('mdNode_AnkleStretch.outputX', 'left_ik_joint_ankle.tx')
 
 '''Step 7: Create the Foot Roll'''
 #Add a "Roll Break" and "Foot Roll" attribute to the leg control
-cmds.addAttr('left_ik_control_leg', shortName = "Roll_Break", longName = "Roll_Break", defaultValue = 0, keyable = True)
-cmds.addAttr('left_ik_control_leg', shortName = "Foot_Roll", longName = "Foot_Roll", defaultValue = 0, keyable = True)
+cmds.addAttr('left_ik_leg_control', shortName = "Roll_Break", longName = "Roll_Break", defaultValue = 0, keyable = True)
+cmds.addAttr('left_ik_leg_control', shortName = "Foot_Roll", longName = "Foot_Roll", defaultValue = 0, keyable = True)
 
 #Setup the foot roll and Create utility nodes
 cmds.shadingNode("condition", asUtility=True, n='conditionNode_ballRoll')
@@ -175,24 +175,24 @@ cmds.setAttr("conditionNode_negBallRoll.operation", 3)
 cmds.setAttr("conditionNode_ballRoll.operation", 3)
 
 #Setup Toe
-cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_toeRoll.firstTerm')
-cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_toeRoll.colorIfTrueR')
-cmds.connectAttr('left_ik_control_leg.Roll_Break', 'conditionNode_toeRoll.secondTerm')
-cmds.connectAttr('left_ik_control_leg.Roll_Break', 'conditionNode_toeRoll.colorIfFalseR')
-cmds.connectAttr('left_ik_control_leg.Roll_Break', 'pmaNode_toeRoll.input1D[1]')
+cmds.connectAttr('left_ik_leg_control.Foot_Roll', 'conditionNode_toeRoll.firstTerm')
+cmds.connectAttr('left_ik_leg_control.Foot_Roll', 'conditionNode_toeRoll.colorIfTrueR')
+cmds.connectAttr('left_ik_leg_control.Roll_Break', 'conditionNode_toeRoll.secondTerm')
+cmds.connectAttr('left_ik_leg_control.Roll_Break', 'conditionNode_toeRoll.colorIfFalseR')
+cmds.connectAttr('left_ik_leg_control.Roll_Break', 'pmaNode_toeRoll.input1D[1]')
 cmds.connectAttr('conditionNode_toeRoll.outColorR', 'pmaNode_toeRoll.input1D[0]')
 cmds.connectAttr('pmaNode_toeRoll.output1D', 'group_toe_pivot.rx')
 
 #Setup Heel
-cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_heelRoll.firstTerm')
-cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_heelRoll.colorIfTrueR')
+cmds.connectAttr('left_ik_leg_control.Foot_Roll', 'conditionNode_heelRoll.firstTerm')
+cmds.connectAttr('left_ik_leg_control.Foot_Roll', 'conditionNode_heelRoll.colorIfTrueR')
 cmds.connectAttr('conditionNode_heelRoll.outColorR', 'group_heel_pivot.rotateX')
 
 #Setup Ball
-cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_ballRoll.firstTerm')
-cmds.connectAttr('left_ik_control_leg.Foot_Roll', 'conditionNode_ballRoll.colorIfTrueR')
-cmds.connectAttr('left_ik_control_leg.Roll_Break', 'conditionNode_negBallRoll.secondTerm')
-cmds.connectAttr('left_ik_control_leg.Roll_Break', 'conditionNode_negBallRoll.colorIfTrueR')
+cmds.connectAttr('left_ik_leg_control.Foot_Roll', 'conditionNode_ballRoll.firstTerm')
+cmds.connectAttr('left_ik_leg_control.Foot_Roll', 'conditionNode_ballRoll.colorIfTrueR')
+cmds.connectAttr('left_ik_leg_control.Roll_Break', 'conditionNode_negBallRoll.secondTerm')
+cmds.connectAttr('left_ik_leg_control.Roll_Break', 'conditionNode_negBallRoll.colorIfTrueR')
 cmds.connectAttr('conditionNode_negBallRoll.outColorR', 'pmaNode_ballRoll.input1D[0]')
 cmds.connectAttr('group_toe_pivot.rx', 'pmaNode_ballRoll.input1D[1]')
 cmds.connectAttr('pmaNode_ballRoll.output1D', 'group_ball_pivot.rx')
@@ -200,8 +200,8 @@ cmds.connectAttr('conditionNode_ballRoll.outColorR', 'conditionNode_negBallRoll.
 cmds.connectAttr('conditionNode_ballRoll.outColorR', 'conditionNode_negBallRoll.colorIfFalseR')
 
 #Make the Toe Flap attribute and connect to the flap group
-cmds.addAttr('left_ik_control_leg', shortName='Toe_Flap', longName='Toe_Flap', defaultValue= 0, keyable = True)
-cmds.connectAttr('left_ik_control_leg.Toe_Flap', 'group_flap.rx')
+cmds.addAttr('left_ik_leg_control', shortName='Toe_Flap', longName='Toe_Flap', defaultValue= 0, keyable = True)
+cmds.connectAttr('left_ik_leg_control.Toe_Flap', 'group_flap.rx')
 
 '''Step 8: Pivot for Bank and Twist'''
 #Create a new control object for the foot pvot and move it to the Ball group
@@ -215,7 +215,7 @@ cmds.group(n='group_ctrl_footPivot', empty=True)
 cmds.parent('group_ctrl_footPivot', 'left_ctrl_footPivot')
 
 #Parent the ctrl_footPivot to ctrl_foot and freeze transforms (make identiy) on ctrl_footPivot.
-cmds.parent('left_ctrl_footPivot', 'left_ik_control_leg')
+cmds.parent('left_ctrl_footPivot', 'left_ik_leg_control')
 cmds.makeIdentity('left_ctrl_footPivot', apply=True)
 
 #Now we will connect the grp_ctrl_footPivot.translate to grp_footPivot.rotatePivot
@@ -226,8 +226,8 @@ cmds.xform('group_ctrl_footPivot', t=ballPos)
 
 '''Wrap up:'''
 #Make a couple more attributes for twist and bank, then hook those up to the grp_footPivot.
-cmds.addAttr('left_ik_control_leg', shortName='Foot_Pivot', longName='Foot_Pivot', defaultValue = 0, keyable = True)
-cmds.addAttr('left_ik_control_leg', shortName='Foot_Bank', longName='Foot_Bank', defaultValue = 0, keyable = True)
-cmds.connectAttr('left_ik_control_leg.Foot_Pivot', 'group_foot_pivot.ry')
-cmds.connectAttr('left_ik_control_leg.Foot_Bank', 'group_foot_pivot.rz')
+cmds.addAttr('left_ik_leg_control', shortName='Foot_Pivot', longName='Foot_Pivot', defaultValue = 0, keyable = True)
+cmds.addAttr('left_ik_leg_control', shortName='Foot_Bank', longName='Foot_Bank', defaultValue = 0, keyable = True)
+cmds.connectAttr('left_ik_leg_control.Foot_Pivot', 'group_foot_pivot.ry')
+cmds.connectAttr('left_ik_leg_control.Foot_Bank', 'group_foot_pivot.rz')
 
