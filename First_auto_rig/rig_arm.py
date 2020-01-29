@@ -73,6 +73,8 @@ class Rig_Arm:
 		##Create Pole vector for IK Handle##
 		####################################
 		
+		pole_vector_position = self.calculatePoleVectorPosition()
+
 		#Query IK elbow joint world space position
 		ik_elbow_joint_pos = cmds.xform(self.module_info['ik_joints'][1], q=True, t = True, ws = True)
 		#Create Locator for Pole Vector
@@ -124,7 +126,26 @@ class Rig_Arm:
 			control_info.append([ctrl_group, ctrl])
 		return(control_info)
 
-
+	def calculatePoleVectorPosition(self, joints):
+		from maya import cmds , OpenMaya
+		start = cmds.xform(joints[0], q = True, ws = True, t = True)
+		mid = cmds.xform(joints[1], q = True, ws = True, t = True)
+		end = cmds.xform(joints[2], q = True, ws = True, t = True)
+		
+		startVector = OpenMaya.MVector(start[0], start[1], start[2])
+		midVector = OpenMaya.MVector(mid[0], mid[1], mid[2])
+		endVector = OpenMaya.MVector(end[0], end[1], end[2])
+		
+		startEnd = endVector - startVector
+		startMid = midVector - startVector
+		dotP = startMid * startEnd
+		proj = float(dotP) / float(startEnd.length())
+		startEndN = startEnd.normal()
+		projV = startEndN * proj
+		arrowV = startMid - projV
+		arrowV *= 0.5
+		finalV = arrowV + midVector
+		return([finalV.x, finalV.y, finalV.z])
 
 
 
