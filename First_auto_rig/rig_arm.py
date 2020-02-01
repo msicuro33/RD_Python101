@@ -73,18 +73,14 @@ class Rig_Arm:
 		##Create Pole vector for IK Handle##
 		####################################
 		
-		pole_vector_position = self.calculatePoleVectorPosition()
+		#Get the location for the pole vector, store it and create a pole vector control
+		pole_vector_position = self.calculatePoleVectorPosition([self.module_info['ik_joints'][0],self.module_info['ik_joints'][1],self.module_info['ik_joints'][2]])
+		pole_vector_ctrl_info = [[pole_vector_position,self.module_info['ik_controls'][2]]]
+		self.createControl(pole_vector_ctrl_info)
 
-		#Query IK elbow joint world space position
-		ik_elbow_joint_pos = cmds.xform(self.module_info['ik_joints'][1], q=True, t = True, ws = True)
-		#Create Locator for Pole Vector
-		elbow_Locator = cmds.spaceLocator(n= self.module_info['ik_controls'][2])
-		#Move the Locator to the elbow joint
-		cmds.xform(elbow_Locator, t = ik_elbow_joint_pos, ws = True)
-		#Move the Locator away from the elbow in the Z axis
-		cmds.setAttr('elbow_pole_vector.translateZ', -4.0,)
 		#Create Pole Vector Constraint
 		cmds.poleVectorConstraint(self.module_info['ik_controls'][2], self.module_info['ik_controls'][1])
+
 
 		##################################################
 		##Orient constraint IK wrist joint to IK control##
