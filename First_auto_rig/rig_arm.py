@@ -80,11 +80,27 @@ class Rig_Arm:
 		#But there isn't a name in the data for an IK ctrlgroup name
 
 		#3rd Step: Parent IK handle to the control
-		cmds.parent(self.rig_info['ik_handle'][0], self.rig_info['ik_controls'][1])
+		cmds.parent(self.rig_info['ik_handle'][0], self.rig_info['ik_controls'][0])
 
 		#Clear selection
 		cmds.select(cl=True)
 
+		
+		#Create Pole vector for IK Handle
+		#Get the location for the pole vector, store it and create a pole vector control
+		pole_vector_position = utils.calculatePoleVectorPosition([self.rig_info['ik_joints'][0],self.rig_info['ik_joints'][1],self.module_info['ik_joints'][2]])
+		pole_vector_ctrl_info = [[pole_vector_position,self.rig_info['ik_controls'][2]]]
+		self.rig_info['pole_vector_control'] = utils.createControl([[pole_vector_position, self.rig_info['ik_controls'][2]]])
+
+		#Create Pole Vector Constraint
+		cmds.poleVectorConstraint(self.rig_info['ik_controls'][2], self.rig_info['ik_handle'][0])
+
+
+		#Orient constrain IK wrist joint to IK control
+		cmds.orientConstraint(self.rig_info['ik_controls'][0], self.rig_info['ik_joints'][2], mo = True)
+
+		#Make control arm settings
+		self.rig_info['set_control'] = utils.createControl([[self.rig_info['positions'][2], 'control_settings']])
 
 		#################
 		##Create FK Rig##
@@ -96,27 +112,10 @@ class Rig_Arm:
 		cmds.select(cl=True)
 
 		#Parent FK controls
-		cmds.parent(fk_ctrl_info[0][0],fk_ctrl_info[1][1][0])
-		cmds.parent(fk_ctrl_info[1][0],fk_ctrl_info[2][1][0])
+		cmds.parent(self.rig_info['fk_controls'][0][0],self.rig_info['fk_controls'][1][1][0])
+		cmds.parent(self.rig_info['fk_controls'][1][0],self.rig_info['fk_controls'][2][1][0])
 
 
-		####################################
-		##Create Pole vector for IK Handle##
-		####################################
-		
-		#Get the location for the pole vector, store it and create a pole vector control
-		pole_vector_position = self.calculatePoleVectorPosition([self.module_info['ik_joints'][0],self.module_info['ik_joints'][1],self.module_info['ik_joints'][2]])
-		pole_vector_ctrl_info = [[pole_vector_position,self.module_info['ik_controls'][2]]]
-		utils.createControl(pole_vector_ctrl_info)
-
-		#Create Pole Vector Constraint
-		cmds.poleVectorConstraint(self.module_info['ik_controls'][2], self.module_info['ik_controls'][1])
-
-
-		##################################################
-		##Orient constraint IK wrist joint to IK control##
-		##################################################
-		cmds.orientConstraint(self.module_info['ik_controls'][0], self.module_info['ik_joints'][2], mo = True)
 
 
 
