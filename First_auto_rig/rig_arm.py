@@ -74,10 +74,8 @@ class Rig_Arm:
 		ikHandle_name = self.module_info['ik_controls'][1].replace('s_',self.instance)
 		self.rig_info['ik_handle'] = cmds.ikHandle(n=ikHandle_name, sj=self.rig_info['ik_joints'][0], ee=self.rig_info['ik_joints'][2], sol='ikRPsolver',p = 2, w = 1)
 
-		#2nd Step: Define info to be passed into createControl function to create IK control
+		#2nd Step: Create IK control
 		self.rig_info['ik_controls'] = utils.createControl([[self.rig_info['positions'][2], self.module_info['ik_controls'][0].replace('s_',self.instance)]])
-		#Thought it should be: self.createControl([[self.module_info['positions'][2], self.module_info['ik_controls'][0], self.module_info['ik_controls'][1]]])
-		#But there isn't a name in the data for an IK ctrlgroup name
 
 		#3rd Step: Parent IK handle to the control
 		cmds.parent(self.rig_info['ik_handle'][0], self.rig_info['ik_controls'][0])
@@ -87,9 +85,11 @@ class Rig_Arm:
 
 		
 		#Create Pole vector for IK Handle
-		#Get the location for the pole vector, store it and create a pole vector control
+
+		#Store position for the pole vector and store the info in pole_vector_ctrl_info
 		pole_vector_position = utils.calculatePoleVectorPosition([self.rig_info['ik_joints'][0],self.rig_info['ik_joints'][1],self.module_info['ik_joints'][2]])
 		pole_vector_ctrl_info = [[pole_vector_position,self.rig_info['ik_controls'][2]]]
+		#create pole vector control
 		self.rig_info['pole_vector_control'] = utils.createControl([[pole_vector_position, self.rig_info['ik_controls'][2]]])
 
 		#Create Pole Vector Constraint
@@ -99,8 +99,10 @@ class Rig_Arm:
 		#Orient constrain IK wrist joint to IK control
 		cmds.orientConstraint(self.rig_info['ik_controls'][0], self.rig_info['ik_joints'][2], mo = True)
 
-		#Make control arm settings
+		#Make control arm settings to handled IK/FK switching
 		self.rig_info['set_control'] = utils.createControl([[self.rig_info['positions'][2], 'control_settings']])
+		cmds.addAttr(self.rig_info['set_control'][1], longName = 'IK_FK', attribute = 'enum', enumName = 'fk:ik', keyable = True)
+
 
 		#################
 		##Create FK Rig##
@@ -123,7 +125,7 @@ class Rig_Arm:
 		#parent Constrain fk->ik->rig
 		#cmds.parentConstraint('fk_shoulder_joint', 'ik_shoulder_joint', 'rig_shoulder_joint', maintainOffset=True, weight=1)
 		#To switch between FK and IK, change values of the two attributes (FK shoulder joint and IK shoulder joint)
-		# and set one or the other to zero		
+		# and set one or the other to zero	
 
 	
 
