@@ -7,7 +7,7 @@ reload(utils)
 #Create variables above the Class level that can be read on Class import
 #This is also known as Attributes of a Class
 class_name = 'Rig_Arm'
-layout_file = arm.json
+#layout_file = arm.json
 num_joints = 4
 
 
@@ -41,7 +41,7 @@ class Rig_Arm:
 		doesn't meet the requirements for an arm'''
 
 		#Set a temporary variable to override the name of the side to determine Left or Right
-		self.instance = "L_"
+		self.instance = "Left_"
 
 		#Run rig_arm function
 		self.rig_arm()
@@ -78,7 +78,7 @@ class Rig_Arm:
 		self.rig_info['ik_controls'] = utils.createControl([[self.rig_info['positions'][2], self.module_info['ik_controls'][0].replace('s_',self.instance)]])
 
 		#3rd Step: Parent IK handle to the control
-		cmds.parent(self.rig_info['ik_handle'][0], self.rig_info['ik_controls'][0])
+		cmds.parent(self.rig_info['ik_handle'][0], self.rig_info['ik_controls'][1])
 
 		#Clear selection
 		cmds.select(cl=True)

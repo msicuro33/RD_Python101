@@ -62,3 +62,35 @@ def calculatePoleVectorPosition(joints):
 	arrowV *= 0.5
 	finalV = arrowV + midVector
 	return([finalV.x, finalV.y, finalV.z])
+
+def connectThroughBlendColors(parentsA, parentsB, children, instance, switchattr):
+	constraints = []
+	for i in range(len(children)):
+		#Separate joint name with partition and store in a variable
+		switch_Prefix = children[i].partition[2]
+		#Create blend color nodes for Translate, Rotate and 
+		#Scale and connect to the arm settings CTRL IK/FK attribute
+		bcNode_Translate = cmds.shadingNode("blendColors", asUtility = True, name = "bcNode_Translate_Switch_" + switch_Prefix)
+		cmds.connectAttr(switchattr, bcNode_Translate + ".blender")
+		bcNode_Rotate = cmds.shadingNode("blendColors", asUtility = True, name = "bcNode_Rotate_Switch_" + switch_Prefix)
+		cmds.connectAttr(switchattr, bcNode_Rotate + ".blender")
+		bcNode_Scale = cmds.shadingNode("blendColors", asUtility = True, name = "bcNode_Scale_Switch_" + switch_Prefix)
+		cmds.connectAttr(switchattr, bcNode_Scale + ".blender")
+		constraints.append(bcNode_Translate, bcNode_Rotate, bcNode_Scale)
+
+		#Input Parents
+		cmds.connectAttr(parentsA[i] + ".translate", bcNode_Translate + ".color1")
+		cmds.connectAttr(parentsA[i] + ".rotate", bcNode_Rotate + ".color1")
+		cmds.connectAttr(parentsA[i] + ".scale", bcNode_Scale + ".color1")
+		if parentsB != "None":
+			cmds.connectAttr(parentsB[i] + ".translate", bcNode_Translate + ".color2")
+			cmds.connectAttr(parentsB[i] + ".rotate", bcNode_Rotate + ".color2")
+			cmds.connectAttr(parentsB[i] + ".scale", bcNode_Scale + ".color2")
+
+		#Output to children
+		cmds.connectAttr(bcNode_Translate + ".output", children[i] + ".translate")
+		cmds.connectAttr(bcNode_Rotate + ".output", children[i] + ".rotate")
+		cmds.connectAttr(bcNode_Scale + ".output", children[i] + ".scale")
+	return(constraints)
+
+
