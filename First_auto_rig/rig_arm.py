@@ -78,7 +78,7 @@ class Rig_Arm:
 		self.rig_info['ik_controls'] = utils.createControl([[self.rig_info['positions'][2], self.module_info['ik_controls'][0].replace('s_',self.instance)]])
 
 		#3rd Step: Parent IK handle to the control
-		cmds.parent(self.rig_info['ik_handle'][0], self.rig_info['ik_controls'][1])
+		cmds.parent(self.rig_info['ik_handle'][0], self.rig_info['ik_controls'][0][1][0])
 
 		#Clear selection
 		cmds.select(cl=True)
