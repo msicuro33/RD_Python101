@@ -44,7 +44,7 @@ class Rig_Arm:
 		self.instance = "Left_"
 
 		#Run rig_arm function
-		self.rig_arm()
+		#self.rig_arm()
 
 
 	def rig_arm(self):
