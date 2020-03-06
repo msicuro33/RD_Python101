@@ -87,7 +87,7 @@ class Rig_Arm:
 		#Create Pole vector for IK Handle
 
 		#Store position for the pole vector and store the info in pole_vector_ctrl_info
-		pole_vector_position = utils.calculatePoleVectorPosition([self.rig_info['ik_joints'][0],self.rig_info['ik_joints'][1],self.module_info['ik_joints'][2]])
+		pole_vector_position = utils.calculatePoleVectorPosition([self.rig_info['ik_joints'][0],self.rig_info['ik_joints'][1],self.rig_info['ik_joints'][2]])
 		pole_vector_ctrl_info = [[pole_vector_position,self.rig_info['ik_controls'][2]]]
 		#create pole vector control
 		self.rig_info['pole_vector_control'] = utils.createControl([[pole_vector_position, self.rig_info['ik_controls'][2]]])
