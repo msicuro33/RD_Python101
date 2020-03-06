@@ -88,20 +88,20 @@ class Rig_Arm:
 
 		#Store position for the pole vector and store the info in pole_vector_ctrl_info
 		pole_vector_position = utils.calculatePoleVectorPosition([self.rig_info['ik_joints'][0],self.rig_info['ik_joints'][1],self.rig_info['ik_joints'][2]])
-		pole_vector_ctrl_info = [[pole_vector_position,self.rig_info['ik_controls'][2]]]
+		
 		#create pole vector control
-		self.rig_info['pole_vector_control'] = utils.createControl([[pole_vector_position, self.rig_info['ik_controls'][2]]])
+		self.rig_info['pole_vector_control'] = utils.createControl([[pole_vector_position, self.module_info['ik_controls'][2]]])
 
 		#Create Pole Vector Constraint
-		cmds.poleVectorConstraint(self.rig_info['ik_controls'][2], self.rig_info['ik_handle'][0])
+		cmds.poleVectorConstraint(self.rig_info['pole_vector_control'][0][1][0], self.rig_info['ik_handle'][0])
 
 
 		#Orient constrain IK wrist joint to IK control
-		cmds.orientConstraint(self.rig_info['ik_controls'][0], self.rig_info['ik_joints'][2], mo = True)
+		cmds.orientConstraint(self.rig_info['ik_controls'][0][1][0], self.rig_info['ik_joints'][2], mo = True)
 
 		#Make control arm settings to handled IK/FK switching
 		self.rig_info['set_control'] = utils.createControl([[self.rig_info['positions'][2], 'control_settings']])
-		cmds.addAttr(self.rig_info['set_control'][1], longName = 'IK_FK', attribute = 'enum', enumName = 'fk:ik', keyable = True)
+		cmds.addAttr(self.rig_info['set_control'][0][1][0], longName = 'IK_FK', attributeType = 'enum', enumName = 'fk:ik', keyable = True)
 
 
 		#################
