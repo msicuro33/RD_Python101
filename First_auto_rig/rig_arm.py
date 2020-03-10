@@ -7,7 +7,7 @@ reload(utils)
 #Create variables above the Class level that can be read on Class import
 #This is also known as Attributes of a Class
 class_name = 'Rig_Arm'
-#layout_file = arm.json
+layout_file = arm.json
 num_joints = 4
 
 
@@ -43,8 +43,8 @@ class Rig_Arm:
 		#Set a temporary variable to override the name of the side to determine Left or Right
 		self.instance = "Left_"
 
-		#Run rig_arm function
-		#self.rig_arm()
+		Run rig_arm function
+		self.rig_arm()
 
 
 	def rig_arm(self):
