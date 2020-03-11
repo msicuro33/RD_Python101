@@ -24,7 +24,7 @@ class RDojo_UI(object):
 		self.rig_mod_list = []
 		rig_contents = os.listdir(os.environ["RDOJO_DATA"] + "First_auto_rig/")
 		for mod in rig_contents:
-			if '.pyc' not in mod or 'init' not in mod:
+			if '.pyc' not in mod and 'init' not in mod:
 				self.rig_mod_list.append(mod)
 		print(self.rig_mod_list)
 
