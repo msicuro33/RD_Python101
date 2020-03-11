@@ -80,7 +80,7 @@ class RDojo_UI(object):
 	def rigmod(self, modfile, *args):
 		'''__import__ opens a module  and reads info from it without
 			actually loading the module in memory'''
-		mod = __import__("First_auto_rig" +modfile, {}, {}, [modfile])
+		mod = __import__("First_auto_rig." +modfile, {}, {}, [modfile])
 		reload(mod)
 		#getattr will get an attribute from a class
 		module_class = getattr(mod, mod.class_name)
