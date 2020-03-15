@@ -14,7 +14,8 @@ num_joints = 4
 class Rig_Arm:
 	"""docstring for ClassName"""
 	
-	def __init__(self):
+	def __init__(self, ui_info):
+		print(ui_info)
 		#Get the joint list from the arm json file
 		data_path = os.environ["RDOJO_DATA"] + "data/rig/arm.json"
 		#Use the read json function
@@ -41,7 +42,7 @@ class Rig_Arm:
 		doesn't meet the requirements for an arm'''
 
 		#Set a temporary variable to override the name of the side to determine Left or Right
-		self.instance = "Left_"
+		self.instance = ui_info[0]
 
 		#Run rig_arm function
 		self.rig_arm()
@@ -99,7 +100,7 @@ class Rig_Arm:
 		#Orient constrain IK wrist joint to IK control
 		cmds.orientConstraint(self.rig_info['ik_controls'][1], self.rig_info['ik_joints'][2], mo = True)
 
-		#Make control arm settings to handled IK/FK switching
+		#Make control arm settings to handle IK/FK switching
 		self.rig_info['set_control'] = utils.createControl([[self.rig_info['positions'][2], 'control_settings']])[0]
 		cmds.addAttr(self.rig_info['set_control'][1], longName = 'IK_FK', attributeType = 'enum', enumName = 'fk:ik', keyable = True)
 
@@ -117,7 +118,20 @@ class Rig_Arm:
 		cmds.parent(self.rig_info['fk_controls'][0][0],self.rig_info['fk_controls'][1][1][0])
 		cmds.parent(self.rig_info['fk_controls'][1][0],self.rig_info['fk_controls'][2][1][0])
 
+		#Connect IK & FK to rig joints
+		switch_attribute = self.rig_info['set_control'][1] + '.IK_FK'
+		utils.connectThroughBlendColors(self.rig_info['ik_joints'], self.rig_info['fk_joints'], self.rig_info['rig_joints'], self.instance, switch_attribute)
 
+		#Constrain FK joints to controls
+		[cmds.parentConstraint(self,rig_info['fk_controls'][i][1], self.rig_info['fk_joints'][i], maintainOffset = True) for i in range(len(self.rig_info['fk_controls']))]
+
+		#Set up IK/FK matching scriptJob
+		'''
+		switchAttr = (self.rig_info['set_control'][1] + '.IK_FK')
+		cmds.scriptJob(runOnce = False, permanent = True, attributeChange = [switchAttr, utils.match_ikfk])
+		# matchNodeName = cmds.scriptNode(scriptType = 1, beforeScript = print("Do Stuff"), name = 'Script', sourceType = 'python')
+		print(cmds.scriptJob(listJobs = True))
+		'''
 
 
 

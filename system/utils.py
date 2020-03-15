@@ -93,4 +93,16 @@ def connectThroughBlendColors(parentsA, parentsB, children, instance, switchattr
 		cmds.connectAttr(bcNode_Scale + ".output", children[i] + ".scale")
 	return(constraints)
 
+def match_ikfk(*args):
+	print("Match")
+	initialize_job = cmds.scriptJob(runOnce = False, killWithScene = False, event = ["SelectionChanged", checkForSwitch])
+
+def checkForSwitch():
+	print("Check")
+	sel = cmds.ls(sl=True)[0]
+	print(sel)
+	print(cmds.listAttr(sel, keyable = True))
+	if ".IK_FK" in cmds.listAttr(cmds.ls(sl = True)[0], keyable = True):
+		print("Has Switch")
+
 

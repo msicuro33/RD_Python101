@@ -1,6 +1,8 @@
 import maya.cmds as cmds
 import os
 from functools import partial
+import system.utils as utils
+reload(utils)
 
 print('UI')
 
@@ -28,6 +30,9 @@ class RDojo_UI(object):
 				self.rig_mod_list.append(mod)
 		print(self.rig_mod_list)
 
+		#An empty list to store information collected from the UI
+		self.ui_info = []
+
 
  	def ui(self, *args):
  		#Check to see if the UI exists
@@ -49,20 +54,34 @@ class RDojo_UI(object):
  		self.UIElements["guiFrameLayout1"] = cmds.frameLayout(label = "Layout", parent = self.UIElements["mainColLayout"])
  		self.UIElements["guiFlowLayout1"] = cmds.flowLayout(vertical = False, width = windowWidth, height = windowHeight/2, wrap = True , backgroundColor = [0.2, 0.2, 0.2], parent = self.UIElements["guiFrameLayout1"])
 
- 		#Dynamically make a button for each rigging module
+ 		cmds.separator(width = 10, horizontal = True, style = 'none', parent = self.UIElements["guiFlowLayout1"])
+ 		self.UIElements["rigMenu"] = cmds.optionMenu('Rig_Install', label = "Rig", parent = self.UIElements["guiFlowLayout1"])
+
+
+ 		#Dynamically make a menu item for each rigging module
  		for mod in self.rig_mod_list:
- 			button_name = mod.replace(".py", "")
- 			cmds.separator(width = 10, horizontal = True, style = 'none', parent = self.UIElements["guiFlowLayout1"])
- 			self.UIElements[button_name] = cmds.button(label = button_name, width = buttonWidth, height = buttonHeight, backgroundColor = [0.2, 0.4, 0.2], parent = self.UIElements["guiFlowLayout1"], command = partial(self.rigmod,button_name))
+ 			item_name = mod.replace(".py", "")
+ 			cmds.menuItem(label = item_name, parent = self.UIElements["rigMenu"], command = partial(self.rigmod,item_name))
 
 
- 		#Menu listing all the layout files
- 		#cmds.separator(width = 10, horizontal = True, style = 'none', parent = self.UIElements["guiFlowLayout1"])
+ 		cmds.separator(width = 10, horizontal = True, style = 'none', parent = self.UIElements["guiFlowLayout1"])
+ 		#Make a menu for the left, right and center for the value to be queried later
+ 		sides = ["Left_","Right_","Center_"]
+ 		self.UIElements["sideMenu"] = cmds.optionMenu("Side", label = 'side', parent = self.UIElements["guiFlowLayout1"])
+ 		for i in sides:
+ 			cmds.menuItem(label = i, parent = self.UIElements["sideMenu"])
 
- 		#Create the Rig Arm button
- 		#self.UIElements["rig_arm_button"] = cmds.button(label = "rig arm", width = buttonWidth, height = buttonHeight, backgroundColor = [0.2, 0.4, 0.2], parent = self.UIElements["guiFlowLayout1"], command = self.rigarm)
- 		#self.UIElements["rig_leg_button"] = cmds.button(label = "rig leg", width = buttonWidth, height = buttonHeight, backgroundColor = [0.2, 0.4, 0.2], parent = self.UIElements["guiFlowLayout1"])
-
+ 		#Query the module list(I think it queries the module currently selected?)
+ 		mod_file = cmds.optionMenu(self.UIElements['rigMenu'], query = True, value = True)
+ 		
+ 		cmds.separator(width = 10, horizontal = True, style = 'none', parent = self.UIElements["guiFlowLayout1"])
+ 		
+ 		#Make a button to run the rig script
+ 		self.UIElements["rigButton"] = cmds.button(label = "Rig", width = buttonWidth, height = buttonHeight, backgroundColor = [0.2, 0.4, 0.2], parent = self.UIElements["guiFlowLayout1"], command = partial(self.rigmod,mod_file))
+ 		
+ 		#Make button for IK/FK matching
+ 		self.UIElements["ikfk_match_button"] = cmds.button(label = "Match", width = buttonWidth, height = buttonHeight, backgroundColor = [0.2, 0.4, 0.2], parent = self.UIElements["guiFlowLayout1"], command = utils.match_ikfk)
+ 		
 
 
  		#Show the window
@@ -77,13 +96,17 @@ class RDojo_UI(object):
 		print(rig_arm)
 		rig_arm.rig_arm()"""
 
-	def rigmod(self, modfile, *args):
+	def rigmod(self, mod_file, *args):
 		'''__import__ opens a module  and reads info from it without
 			actually loading the module in memory'''
-		mod = __import__("First_auto_rig." +modfile, {}, {}, [modfile])
+		mod = __import__("First_auto_rig." +mod_file, {}, {}, [mod_file])
 		reload(mod)
+
+		side_value = cmds.optionMenu(self.UIElements["sideMenu"], query = True, value = True)
+		self.ui_info.append([side_value, mod_file])
+
 		#getattr will get an attribute from a class
 		module_class = getattr(mod, mod.class_name)
-		module_instance = module_class()
+		module_instance = module_class(self.ui_info[0])
 
 
