@@ -67,7 +67,7 @@ def connectThroughBlendColors(parentsA, parentsB, children, instance, switchattr
 	constraints = []
 	for i in range(len(children)):
 		#Separate joint name with partition and store in a variable
-		switch_Prefix = children[i].partition[2]
+		switch_Prefix = children[i].partition('_')[2]
 		#Create blend color nodes for Translate, Rotate and 
 		#Scale and connect to the arm settings CTRL IK/FK attribute
 		bcNode_Translate = cmds.shadingNode("blendColors", asUtility = True, name = "bcNode_Translate_Switch_" + switch_Prefix)
@@ -76,7 +76,7 @@ def connectThroughBlendColors(parentsA, parentsB, children, instance, switchattr
 		cmds.connectAttr(switchattr, bcNode_Rotate + ".blender")
 		bcNode_Scale = cmds.shadingNode("blendColors", asUtility = True, name = "bcNode_Scale_Switch_" + switch_Prefix)
 		cmds.connectAttr(switchattr, bcNode_Scale + ".blender")
-		constraints.append(bcNode_Translate, bcNode_Rotate, bcNode_Scale)
+		constraints.append([bcNode_Translate, bcNode_Rotate, bcNode_Scale])
 
 		#Input Parents
 		cmds.connectAttr(parentsA[i] + ".translate", bcNode_Translate + ".color1")

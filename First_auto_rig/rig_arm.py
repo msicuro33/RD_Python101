@@ -119,11 +119,11 @@ class Rig_Arm:
 		cmds.parent(self.rig_info['fk_controls'][1][0],self.rig_info['fk_controls'][2][1][0])
 
 		#Connect IK & FK to rig joints
-		switch_attribute = self.rig_info['set_control'][1] + '.IK_FK'
+		switch_attribute = self.rig_info['set_control'][1][0] + '.IK_FK'
 		utils.connectThroughBlendColors(self.rig_info['ik_joints'], self.rig_info['fk_joints'], self.rig_info['rig_joints'], self.instance, switch_attribute)
 
 		#Constrain FK joints to controls
-		[cmds.parentConstraint(self,rig_info['fk_controls'][i][1], self.rig_info['fk_joints'][i], maintainOffset = True) for i in range(len(self.rig_info['fk_controls']))]
+		[cmds.parentConstraint(self.rig_info['fk_controls'][i][1], self.rig_info['fk_joints'][i], maintainOffset = True) for i in range(len(self.rig_info['fk_controls']))]
 
 		#Set up IK/FK matching scriptJob
 		'''
